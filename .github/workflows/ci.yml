@@ -12,7 +12,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build jars
-        run: cd java && mvn package && cp artifacts/cfsocket-1.0.0.jar
+        run: cd java && mvn package
 
       - name: Move jars
         run: mv java/artifacts/cfsocket-1.0.0.jar lib/
