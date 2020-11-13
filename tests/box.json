@@ -1,0 +1,11 @@
+{
+    "dependencies":{
+        "testbox":"^4.1.0+384"
+    },
+    "installPaths":{
+        "testbox":"testbox/"
+    },
+    "testbox":{
+        "runner":"http://127.0.0.1:7331/runtests.cfm"
+    }
+}

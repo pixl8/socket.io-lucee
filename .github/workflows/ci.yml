@@ -1,0 +1,38 @@
+name: Continuous Integration
+on:
+  push:
+  pull_request:
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build jars
+        run: cd java && mvn package && cp artifacts/cfsocket-1.0.0.jar
+
+      - name: Move jars
+        run: mv java/artifacts/cfsocket-1.0.0.jar lib/
+
+      - name: Install dependencies
+        uses: pixl8/github-action-box-install@v2
+        with:
+          boxjson_dir: /tests
+          verbose: true
+          force: true
+      - name: Run tests
+        uses: pixl8/github-action-box-test@v3
+        with:
+          boxjson_dir: /tests
+          test_dir: /tests
+          test_server_json: /tests/server-tests.json
+          output_file: /tests/test-results.txt
+          verbose: false
+      - name: Upload test results
+        uses: actions/upload-artifact@v1
+        with:
+          name: test-results
+          path: tests/test-results.txt

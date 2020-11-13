@@ -1,0 +1,11 @@
+{
+    "name":"luceesocketio-tests",
+    "openbrowser":false,
+    "trayEnable":false,
+    "web":{
+        "webroot":"/",
+        "http":{
+            "port":"7331"
+        }
+    }
+}
