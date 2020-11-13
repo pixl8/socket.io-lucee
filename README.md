@@ -1,6 +1,8 @@
 LuceeSocketio
 =============
 
+**THIS PROJECT IS CURRENTLY BEING DEVELOPED AND IS NOT READY FOR USE WHATSOEVER**
+
 This is a SocketIO server implementation for the [Lucee webserver](https://www.lucee.org).
 
 ## License
