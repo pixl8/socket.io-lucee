@@ -19,6 +19,19 @@ component extends="testbox.system.BaseSpec"{
 				expect( failed ).toBeFalse( "Looks like our OSGi bundle failed to register. Lucee error: #message#" );
 			} );
 		} );
+
+		describe( "startServer()", function(){
+			it( "should initialize our embedded undertow websocket server on default host and port", function(){
+				websocketServer.startServer();
+				// TODO, verify this?
+
+				websocketServer.stopServer();
+			} );
+		} );
+
+		try {
+			websocketServer.stopServer();
+		} catch( any e ){}
 	}
 
 }

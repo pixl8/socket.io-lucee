@@ -1,7 +1,13 @@
 component {
 
 // CONSTRUCTOR
-	public any function init() {
+	public any function init(
+		  string host = ListFirst( cgi.http_host, ":" )
+		, string port = 3000
+	) {
+		_setHost( arguments.host );
+		_setPort( arguments.port );
+
 		return this;
 	}
 
@@ -11,19 +17,21 @@ component {
 		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
 		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/cfsocket-1.0.0.jar" );
 		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
-		var bundle     = osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
 
-bundle.start();
-		// osgiUtil.uninstall( bundle );
-		// osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
+		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
 	}
 
-	// public void function startServer() {
-	// 	_getServer().start();
-	// }
-	// public void function stopServer() {
-	// 	_getServer().stop();
-	// }
+	public void function startServer() {
+		_getServer().start();
+	}
+
+	public void function stopServer() {
+		_getServer().stop();
+	}
+
+	public any function getStatus() {
+		WriteDump(_getServer() );abort;
+	}
 
 	// public void function onConnect( exchange, channel ) {
 	// 	$systemoutput( "onConnect called, channel: #channel.getUrl()#" );
@@ -40,29 +48,19 @@ bundle.start();
 
 
 // PRIVATE HELPERS
-	// private any function _getServer() {
-	// 	if ( !StructKeyExists( variables, "_websocketServer" ) ) {
-	// 		var CFMLEngine = createObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
-	// 		var OSGiUtil = createObject( "java", "lucee.runtime.osgi.OSGiUtil" );
-	// 		var resource = CFMLEngine.getResourceUtil().toResourceExisting( getPageContext(), _getLib()[ 1 ] );
+	private any function _getServer() {
+		if ( !StructKeyExists( variables, "_websocketServer" ) ) {
+			variables._websocketServer = createObject( "java", "com.pixl8.cfsocket.CfSocketServer", "com.pixl8.cfsocket" ).init(
+				  this                                     // handlerCfc
+				, ExpandPath( "/" )                        // contextRoot
+				, getPageContext().getApplicationContext() // appCOntext
+				, _getHost()                               // host
+				, _getPort()                               // port
+			);
+		}
 
-	// 		var bundle = OSGiUtil.installBundle(
- //    			CFMLEngine.getBundleContext(),
- //    			resource,
- //    			true
- //    		);
-
-	// 		variables._websocketServer = createObject( "java", "com.pixl8.cfsocket.CfSocketServer", "com.pixl8.CfSocket" ).init(
-	// 			  this                                     // handlerCfc
-	// 			, ExpandPath( "/" )                        // contextRoot
-	// 			, getPageContext().getApplicationContext() // appCOntext
-	// 			, "127.0.0.1"                              // host
-	// 			, 8888
-	// 		);
-	// 	}
-
-	// 	return variables._websocketServer;
-	// }
+		return variables._websocketServer;
+	}
 
 	// private array function _getLib() {
 	// 	if ( !StructKeyExists( variables, "_lib" ) ) {
@@ -75,5 +73,18 @@ bundle.start();
 	// }
 
 // GETTERS AND SETTERS
+	private string function _getHost() {
+	    return _host;
+	}
+	private void function _setHost( required string host ) {
+	    _host = arguments.host;
+	}
+
+	private numeric function _getPort() {
+	    return _port;
+	}
+	private void function _setPort( required numeric port ) {
+	    _port = arguments.port;
+	}
 
 }

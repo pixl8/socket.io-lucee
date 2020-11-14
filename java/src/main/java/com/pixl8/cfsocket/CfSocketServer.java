@@ -42,7 +42,7 @@ public class CfSocketServer {
 		server.start();
 	}
 
-	public void stopServer() {
+	public void stop() {
 		if (server != null) {
 			server.stop();
 		}
