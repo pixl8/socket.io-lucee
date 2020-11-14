@@ -1,7 +1,10 @@
 component extends="testbox.system.BaseSpec"{
 
 	function run(){
-		var websocketServer = new luceesocketio.models.LuceeWebsocketServer();
+		var dummyServerListener = new tests.resources.DummyListener();
+		var websocketServer = new luceesocketio.models.server.LuceeWebsocketServer(
+			listener = dummyServerListener
+		);
 
 		describe( "registerBundle()", function(){
 			it( "should register our OSGi bundle for our Java integration", function(){
