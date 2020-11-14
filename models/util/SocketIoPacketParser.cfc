@@ -10,6 +10,17 @@ component {
 		, "BINARY_ACK"
 	];
 
+	variables._typesReverse = {
+		  CONNECT       = 0
+		, DISCONNECT    = 1
+		, EVENT         = 2
+		, ACK           = 3
+		, CONNECT_ERROR = 4
+		, BINARY_EVENT  = 5
+		, BINARY_ACK    = 6
+	};
+
+
 // CONSTRUCTOR
 	public any function init() {
 		return this;
@@ -60,6 +71,29 @@ component {
 		return parsed;
 	}
 
+	/**
+	 * Serializes a struct back into a socket.io packet
+	 *
+	 * See https://github.com/socketio/socket.io-protocol#packet-format
+	 * for documentation on this packet format
+	 */
+	public string function serialize( required struct message ) {
+		var serialized = "#_typesReverse[ message.type ]#";
+
+		if ( Len( message.ns ) > 1 ) {
+			serialized &= "#message.ns#,"
+		}
+
+		if ( Len( message.id ) ) {
+			serialized &= message.id
+		}
+
+		if ( !IsEmpty( message.data ) ) {
+			serialized &= SerializeJson( message.data );
+		}
+
+		return serialized;
+	}
 
 
 }

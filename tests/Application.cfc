@@ -4,4 +4,6 @@ component {
 	this.mappings[ "/luceesocketio" ] = ExpandPath( "/../" );
 	this.mappings[ "/testbox" ]       = ExpandPath( "/testbox" );
 
+	processingdirective preserveCase="true";
+
 }
