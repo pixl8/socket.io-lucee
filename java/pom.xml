@@ -23,12 +23,21 @@
 			<groupId>org.lucee</groupId>
 			<artifactId>lucee</artifactId>
 			<version>5.3.7.47</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>2.2.1-b03</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>2.2.1-b04</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -47,20 +56,21 @@
 				</configuration>
 			</plugin>
 			<plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.0.1</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>com.pixl8.cfsocket</Export-Package>
-                        <Export-Package>org.jboss.logging.*</Export-Package>
-                        <Export-Package>io.undertow.*</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.0.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>com.pixl8.cfsocket</Export-Package>
+						<Import-Package>*;resolution:=optional</Import-Package>
+						<Embed-Dependency>jboss-logging|undertow-core</Embed-Dependency>
+						<Embed-Directory>target/dependency</Embed-Directory>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

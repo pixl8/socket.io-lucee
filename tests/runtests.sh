@@ -10,7 +10,7 @@ exitcode=0
 box stop name="luceesocketio-tests"
 box start directory="./" serverConfigFile="./server-tests.json"
 box testbox run verbose=true || exitcode=1
-box stop name="workflowtests"
+box stop name="luceesocketio-tests"
 
 exit $exitcode
 
