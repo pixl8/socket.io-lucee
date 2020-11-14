@@ -16,4 +16,12 @@ component implements="luceesocketio.models.server.ILuceeWebsocketServerListener"
 		disconnections.append( connectionId );
 	}
 
+	public struct function getMemento() {
+		return {
+			  disconnections = variables.disconnections
+			, connections    = variables.connections
+			, messages       = variables.messages
+		};
+	}
+
 }

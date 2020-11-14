@@ -1,9 +1,14 @@
 component extends="testbox.system.BaseSpec"{
 
 	function run(){
+		var host = "127.0.0.1";
+		var port = 3000;
+		var websocketClient = new tests.util.WebsocketClient( "ws://#host#:#port#" );
 		var dummyServerListener = new tests.resources.DummyListener();
 		var websocketServer = new luceesocketio.models.server.LuceeWebsocketServer(
-			listener = dummyServerListener
+			  listener = dummyServerListener
+			, host     = host
+			, port     = port
 		);
 
 		describe( "registerBundle()", function(){
@@ -23,12 +28,28 @@ component extends="testbox.system.BaseSpec"{
 			} );
 		} );
 
-		describe( "startServer()", function(){
-			it( "should initialize our embedded undertow websocket server on default host and port", function(){
+		describe( "start and stop server", function(){
+			it( "should initialize our embedded undertow websocket server and accept connections", function(){
 				websocketServer.startServer();
-				// TODO, verify this?
-
+				websocketClient.testConnection();
 				websocketServer.stopServer();
+
+				var serverListenerDebug = dummyServerListener.getMemento();
+
+				expect( ArrayLen( serverListenerDebug.connections ) ).toBe( 1 );
+				expect( ArrayLen( serverListenerDebug.messages ) ).toBe( 2 );
+
+				var connectionId = serverListenerDebug.connections[ 1 ].connectionId;
+				expect( serverListenerDebug.messages[ 1 ] ).toBe( {
+					  connectionId = connectionId
+					, message      = "Hello"
+				} );
+
+				expect( serverListenerDebug.messages[ 2 ] ).toBe( {
+					  connectionId = connectionId
+					, message      = "Thanks for the conversation."
+				} );
+
 			} );
 		} );
 
