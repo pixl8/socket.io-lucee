@@ -16,7 +16,7 @@ jobs:
 
       - name: Convert to bundle
         run: |
-          cd artifacts && \
+          cd java/artifacts && \
           unzip cfsocket-1.0.0.jar && \
           echo "Manifest-Version: 1.0
           Bundle-ManifestVersion: 2
