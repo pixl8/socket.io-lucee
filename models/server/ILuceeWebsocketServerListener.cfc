@@ -1,4 +1,5 @@
 interface {
-	public void function onConnect( any connection, numeric channel, string channelUrl );
-	public void function onFullTextMessage( numeric channel, string message );
+	public void function onConnect( any connectionDetail, numeric connectionId, string connectionUrl );
+	public void function onDisconnect( numeric connectionId );
+	public void function onFullTextMessage( numeric connectionId, string message );
 }

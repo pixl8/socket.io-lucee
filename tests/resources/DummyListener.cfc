@@ -1,14 +1,19 @@
 component implements="luceesocketio.models.server.ILuceeWebsocketServerListener" {
 
-	variables.connections = [];
-	variables.messages    = [];
+	variables.disconnections = [];
+	variables.connections    = [];
+	variables.messages       = [];
 
-	public void function onConnect( any connection, numeric channel, string channelUrl ) {
-		connections.append( { channel=channel, channelUrl=channelUrl } );
+	public void function onConnect( any connectionDetail, numeric connectionId, string connectionUrl ) {
+		connections.append( { connectionId=connectionId, connectionUrl=connectionUrl } );
 	}
 
-	public void function onFullTextMessage( numeric channel, string message ) {
-		messages.append( { channel=channel, message=message } );
+	public void function onFullTextMessage( numeric connectionId, string message ) {
+		messages.append( { connectionId=connectionId, message=message } );
+	}
+
+	public void function onDisconnect( numeric connectionId ) {
+		disconnections.append( connectionId );
 	}
 
 }

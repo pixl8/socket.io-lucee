@@ -72,7 +72,14 @@ public class CfSocketServer {
 	public WebSocketChannel getChannel( int channelId ) {
 		WebSocketChannel channel = connections.get( channelId );
 
-		if ( !channel.isOpen() ) {
+		if ( channel != null && !channel.isOpen() ) {
+			Object[] onCloseArgs = { channelId };
+
+			try {
+				cfcHandler.callMethod( "onDisconnect", onCloseArgs );
+			} catch( Exception e ) {
+				e.printStackTrace();
+			}
 			connections.remove( channelId );
 			return null;
 		}
@@ -101,7 +108,7 @@ public class CfSocketServer {
 				try {
 					cfcHandler.callMethod( "onConnect", onConnectArgs );
 				} catch( Exception e ) {
-					// todo
+					e.printStackTrace();
 				}
 
 				channel.getReceiveSetter().set( new AbstractReceiveListener() {
@@ -113,7 +120,7 @@ public class CfSocketServer {
 						try {
 							cfcHandler.callMethod( "onFullTextMessage", onFullTextMessageArgs );
 						} catch( Exception e ) {
-							// todo
+							e.printStackTrace();
 						}
 					}
 				});
