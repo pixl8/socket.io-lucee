@@ -15,7 +15,7 @@ jobs:
         run: cd java && mvn package
 
       - name: Move jars
-        run: mv java/artifacts/cfsocket-1.0.0.jar lib/
+        run: mv java/target/cfsocket-1.0.0.jar lib/
 
       - name: Install dependencies
         uses: pixl8/github-action-box-install@v2
