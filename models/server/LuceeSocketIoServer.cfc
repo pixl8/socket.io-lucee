@@ -2,9 +2,11 @@ component {
 
 // CONSTRUCTOR
 	public any function init(
-		  string host = ListFirst( cgi.http_host, ":" )
-		, string port = 3000
+		  required ISocketIoServerListener listener
+		,          string                  host = ListFirst( cgi.http_host, ":" )
+		,          string                  port = 3000
 	) {
+		_setListener( arguments.listener );
 		_setHost( arguments.host );
 		_setPort( arguments.port );
 
@@ -12,19 +14,6 @@ component {
 	}
 
 // PUBLIC API METHODS
-	public void function registerBundle() {
-		var cfmlEngine = CreateObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
-		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
-		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/socketio-lucee-1.0.0.jar" );
-		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
-
-		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
-	}
-
-	public boolean function serverIsRegistered() {
-		return StructKeyExists( variables, "_javaServer" );
-	}
-
 	public void function startServer() {
 		_getServer().startServer();
 	}
@@ -35,9 +24,24 @@ component {
 		}
 	}
 
+	public boolean function serverIsRegistered() {
+		return StructKeyExists( variables, "_javaServer" );
+	}
+
+	public void function registerBundle() {
+		var cfmlEngine = CreateObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
+		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
+		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/socketio-lucee-1.0.0.jar" );
+		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
+
+		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
+	}
+
 // PRIVATE HELPERS
 	private any function _getServer() {
 		if ( !serverIsRegistered() ) {
+			registerBundle();
+
 			variables._javaServer = createObject( "java", "com.pixl8.socketiolucee.SocketIoServerWrapper", "com.pixl8.socketio-lucee" ).init(
 				  _getListener()                           // handlerCfc
 				, ExpandPath( "/" )                        // contextRoot
