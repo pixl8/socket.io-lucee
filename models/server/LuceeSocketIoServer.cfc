@@ -2,11 +2,9 @@ component {
 
 // CONSTRUCTOR
 	public any function init(
-		  required ILuceeWebsocketServerListener listener
-		,          string                        host = ListFirst( cgi.http_host, ":" )
-		,          string                        port = 3000
+		  string host = ListFirst( cgi.http_host, ":" )
+		, string port = 3000
 	) {
-		_setListener( arguments.listener );
 		_setHost( arguments.host );
 		_setPort( arguments.port );
 
@@ -17,28 +15,30 @@ component {
 	public void function registerBundle() {
 		var cfmlEngine = CreateObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
 		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
-		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../../lib/cfsocket-1.0.0.jar" );
+		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/socketio-lucee-1.0.0.jar" );
 		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
 
 		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
 	}
 
+	public boolean function serverIsRegistered() {
+		return StructKeyExists( variables, "_javaServer" );
+	}
+
 	public void function startServer() {
-		_getServer().start();
+		_getServer().startServer();
 	}
 
 	public void function stopServer() {
-		_getServer().stop();
-	}
-
-	public numeric function getConnectionCount() {
-		_getServer().getConnectionCount();
+		if ( serverIsRegistered() ) {
+			_getServer().stopServer();
+		}
 	}
 
 // PRIVATE HELPERS
 	private any function _getServer() {
-		if ( !StructKeyExists( variables, "_websocketServer" ) ) {
-			variables._websocketServer = createObject( "java", "com.pixl8.cfsocket.CfSocketServer", "com.pixl8.cfsocket" ).init(
+		if ( !serverIsRegistered() ) {
+			variables._javaServer = createObject( "java", "com.pixl8.socketiolucee.SocketIoServerWrapper", "com.pixl8.socketio-lucee" ).init(
 				  _getListener()                           // handlerCfc
 				, ExpandPath( "/" )                        // contextRoot
 				, getPageContext().getApplicationContext() // appContext
@@ -47,17 +47,10 @@ component {
 			);
 		}
 
-		return variables._websocketServer;
+		return variables._javaServer;
 	}
 
 // GETTERS AND SETTERS
-	private any function _getListener() {
-	    return _listener;
-	}
-	private void function _setListener( required any listener ) {
-	    _listener = arguments.listener;
-	}
-
 	private string function _getHost() {
 	    return _host;
 	}

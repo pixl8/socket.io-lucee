@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pixl8</groupId>
-	<artifactId>luceesocketio</artifactId>
+	<artifactId>socketio-lucee</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>Lucee Wrapper to our SocketIO Java Server</name>
+	<name>SocketIO-Java Server Implementation with Lucee bindings</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>9.4.25.v20191220</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
@@ -61,7 +61,7 @@
 					<source>8</source>
 					<target>8</target>
 					<includes>
-						<include>com/pixl8/luceesocketio/*.java</include>
+						<include>com/pixl8/socketiolucee/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -86,7 +86,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<configuration>
 					<tasks>
-						<copy file="target/luceesocketio-1.0.0-jar-with-dependencies.jar" tofile="artifacts/luceesocketio-1.0.0.jar" />
+						<copy file="target/socketio-lucee-1.0.0-jar-with-dependencies.jar" tofile="artifacts/socketio-lucee-1.0.0.jar" />
 					</tasks>
 				</configuration>
 				<executions>

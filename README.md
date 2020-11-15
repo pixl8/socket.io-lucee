@@ -1,5 +1,5 @@
-LuceeSocketio
-=============
+Socket.io - Lucee Server Implementation
+=======================================
 
 **THIS PROJECT IS CURRENTLY BEING DEVELOPED AND IS NOT READY FOR USE WHATSOEVER**
 

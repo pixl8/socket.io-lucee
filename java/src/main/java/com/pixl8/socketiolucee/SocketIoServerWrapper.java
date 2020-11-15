@@ -1,4 +1,4 @@
-package com.pixl8.luceesocketio;
+package com.pixl8.socketiolucee;
 
 import io.socket.socketio.server.*;
 import io.socket.engineio.server.EngineIoServer;
