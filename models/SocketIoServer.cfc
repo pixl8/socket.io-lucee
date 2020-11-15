@@ -1,5 +1,7 @@
 component {
 
+	variables._namespaces = {};
+
 // CONSTRUCTOR
 	public any function init(
 		  string  host  = ListFirst( cgi.http_host, ":" )
@@ -17,18 +19,45 @@ component {
 	}
 
 // PUBLIC API
-	public SocketIoNamespace function of( required string namespace ) {
+	/**
+	 * Retrieve a Socket.io namespace object. This will be used to emit and
+	 * receive messages.
+	 *
+	 */
+	public SocketIoNamespace function namespace( required string namespace ) {
+		_getJavaServer().registerNamespace( arguments.namespace );
 
+		if ( !StructKeyExists( variables._namespaces, arguments.namespace ) ) {
+			var ns = new SocketIoNamespace(
+				  name   = arguments.namespace
+				, server = this
+			);
+
+			variables._namespaces[ arguments.namespace ] = ns;
+		}
+
+		variables._namespaces[ arguments.namespace ];
+	}
+
+	/**
+	 * This is what socket.io server named their method
+	 * for getting a namespace. I'm sure it make sense so
+	 * am keeping it here for those that want to use it.
+	 * Just an alias of 'namespace'.
+	 *
+	 */
+	public SocketIoNamespace function of( required string namespace ) {
+		return namespace( arguments.namespace );
 	}
 
 // START/STOP SERVER
 	public void function start() {
-		_getServer().startServer();
+		_getJavaServer().startServer();
 	}
 
 	public void function stop() {
 		if ( serverIsRegistered() ) {
-			_getServer().stopServer();
+			_getJavaServer().stopServer();
 		}
 	}
 	// aliases
@@ -37,7 +66,7 @@ component {
 
 // UNDER-THE-HOOD LISTENER INTERFACE
 	public void function onConnect( required string namespace, required string socketId ) {
-		// TODO
+		// namespace( arguments.namespace ).onConnect( socketId )
 	}
 	public void function onDisconnecting( required string namespace, required string socketId ) {
 		// TODO
@@ -54,7 +83,7 @@ component {
 
 
 // PRIVATE HELPERS
-	private any function _getServer() {
+	private any function _getJavaServer() {
 		if ( !serverIsRegistered() ) {
 			_registerBundle();
 

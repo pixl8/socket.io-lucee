@@ -1,15 +1,8 @@
-component {
+component accessors=true {
 
-// CONSTRUCTOR
-	public any function init( required string name ) {
+	property name="name"   type="string";
+	property name="server" type="SocketIoServer";
 
-		return this;
-	}
 
-// PUBLIC API METHODS
-
-// PRIVATE HELPERS
-
-// GETTERS AND SETTERS
 
 }

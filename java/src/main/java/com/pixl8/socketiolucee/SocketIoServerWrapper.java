@@ -55,8 +55,12 @@ public class SocketIoServerWrapper {
 		mServer.stop();
 	}
 
-	public SocketIoNamespace registerNamespace( String name ) {
-		SocketIoNamespace ns = mSocketIoServer.namespace( name );
+	public void registerNamespace( String namespace ) {
+		if ( hasNamespace( namespace ) ) {
+			return;
+		}
+
+		SocketIoNamespace ns = mSocketIoServer.namespace( namespace );
 
 		ns.on( "connect", new Emitter.Listener() {
 			@Override
@@ -83,8 +87,10 @@ public class SocketIoServerWrapper {
 				} );
 			}
 		});
+	}
 
-		return ns;
+	public boolean hasNamespace( String namespace ) {
+		return mSocketIoServer.hasNamespace( namespace );
 	}
 
 // NAMESPACE PROXIES
