@@ -1,31 +1,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.pixl8</groupId>
-	<artifactId>cfsocket</artifactId>
+	<artifactId>luceesocketio</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-	<name>Lucee WebsSocket Wrapper</name>
+	<name>Lucee Wrapper to our SocketIO Java Server</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
-			<groupId>io.undertow</groupId>
-			<artifactId>undertow-core</artifactId>
-			<version>2.1.0.Final</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.4.25.v20191220</version>
 		</dependency>
-
 		<dependency>
-			<groupId>org.jboss.logging</groupId>
-			<artifactId>jboss-logging</artifactId>
-			<version>3.4.1.Final</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>9.4.25.v20191220</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>websocket-server</artifactId>
+			<version>9.4.25.v20191220</version>
+		</dependency>
+		<dependency>
+			<groupId>io.socket</groupId>
+			<artifactId>socket.io-server</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.socket</groupId>
+			<artifactId>engine.io-server</artifactId>
+			<version>1.3.5</version>
+		</dependency>
+		 <dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>engine.io-server-jetty</artifactId>
+            <version>1.3.5</version>
+        </dependency>
 		<dependency>
 			<groupId>org.lucee</groupId>
 			<artifactId>lucee</artifactId>
 			<version>5.3.7.47</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
@@ -44,7 +61,7 @@
 					<source>8</source>
 					<target>8</target>
 					<includes>
-						<include>com/pixl8/cfsocket/*.java</include>
+						<include>com/pixl8/luceesocketio/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -69,7 +86,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<configuration>
 					<tasks>
-						<copy file="target/cfsocket-1.0.0-jar-with-dependencies.jar" tofile="artifacts/cfsocket-1.0.0.jar" />
+						<copy file="target/luceesocketio-1.0.0-jar-with-dependencies.jar" tofile="artifacts/luceesocketio-1.0.0.jar" />
 					</tasks>
 				</configuration>
 				<executions>

@@ -1,4 +1,4 @@
-package com.pixl8.cfsocket;
+package com.pixl8.luceesocketio;
 
 import java.io.File;
 
