@@ -1,0 +1,6 @@
+{
+    "name":"socketio-lucee-testapp",
+    "web":{
+        "webroot":"./"
+    }
+}

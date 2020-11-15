@@ -12,7 +12,7 @@ component {
 		_setPort( arguments.port );
 
 		if ( arguments.start ) {
-			start();
+			this.start();
 		}
 
 		return this;
@@ -36,7 +36,7 @@ component {
 			variables._namespaces[ arguments.namespace ] = ns;
 		}
 
-		variables._namespaces[ arguments.namespace ];
+		return variables._namespaces[ arguments.namespace ];
 	}
 
 	/**
@@ -47,7 +47,7 @@ component {
 	 *
 	 */
 	public SocketIoNamespace function of( required string namespace ) {
-		return namespace( arguments.namespace );
+		return this.namespace( arguments.namespace );
 	}
 
 // START/STOP SERVER
@@ -56,17 +56,17 @@ component {
 	}
 
 	public void function stop() {
-		if ( serverIsRegistered() ) {
+		if ( _serverIsRegistered() ) {
 			_getJavaServer().stopServer();
 		}
 	}
 	// aliases
-	public void function close() { stop(); }
-	public void function shutdown() { stop(); }
+	public void function close() { this.stop(); }
+	public void function shutdown() { this.stop(); }
 
 // UNDER-THE-HOOD LISTENER INTERFACE
 	public void function onConnect( required string namespace, required string socketId ) {
-		// namespace( arguments.namespace ).onConnect( socketId )
+		this.namespace( arguments.namespace ).runEvent( "connect", [ socketId ] );
 	}
 	public void function onDisconnecting( required string namespace, required string socketId ) {
 		// TODO
@@ -84,7 +84,7 @@ component {
 
 // PRIVATE HELPERS
 	private any function _getJavaServer() {
-		if ( !serverIsRegistered() ) {
+		if ( !_serverIsRegistered() ) {
 			_registerBundle();
 
 			variables._javaServer = createObject( "java", "com.pixl8.socketiolucee.SocketIoServerWrapper", "com.pixl8.socketio-lucee" ).init(
