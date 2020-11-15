@@ -64,31 +64,20 @@ public class SocketIoServerWrapper {
 				SocketIoSocket socket = (SocketIoSocket) args[0];
 				mSockets.put( socket.getId(), socket );
 				Object[] luceeArgs = new Object[] { ns.getName(), socket.getId() };
-				try{
-					mCfcHandler.callMethod( "onConnect", luceeArgs );
-				} catch( Exception e ) {
-					e.printStackTrace();
-				}
+
+				_luceeCall( "onConnect", luceeArgs );
 
 				socket.on( "disconnecting", new Emitter.Listener() {
 					@Override
 					public void call(Object... args) {
-						try{
-							mCfcHandler.callMethod( "onDisconnecting", luceeArgs );
-						} catch( Exception e ) {
-							e.printStackTrace();
-						}
+						_luceeCall( "onDisconnecting", luceeArgs );
 					}
 				} );
 
 				socket.on( "disconnect", new Emitter.Listener() {
 					@Override
 					public void call(Object... args) {
-						try{
-							mCfcHandler.callMethod( "onDisconnect", luceeArgs );
-						} catch( Exception e ) {
-							e.printStackTrace();
-						}
+						_luceeCall( "onDisconnect", luceeArgs );
 						mSockets.remove( socket.getId() );
 					}
 				} );
@@ -98,16 +87,100 @@ public class SocketIoServerWrapper {
 		return ns;
 	}
 
-	public int getPort() {
-		return mAddress.getPort();
+// NAMESPACE PROXIES
+	public void namespaceBroadcast( String ns, String room, String event, Object... args ) {
+		mSocketIoServer.namespace( ns ).broadcast( room, event, args );
+	}
+	public void namespaceBroadcast( String ns, String[] rooms, String event, Object... args ) {
+		mSocketIoServer.namespace( ns ).broadcast( rooms, event, args );
 	}
 
-	public String getHostName() {
-		return mAddress.getHostName();
+// SOCKET PROXIES
+	public void socketBroadcast( String socketId, String room, String event, Object... args ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.broadcast( room, event, args );
+		}
+	}
+	public void socketBroadcast( String socketId, String[] rooms, String event, Object... args ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.broadcast( rooms, event, args );
+		}
 	}
 
-	public SocketIoServer getSocketIoServer() {
-		return mSocketIoServer;
+	public void socketDisconnect( String socketId, boolean close ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.disconnect( close );
+		}
+	}
+
+	public void socketJoinRoom( String socketId, String... rooms ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.joinRoom( rooms );
+		}
+	}
+
+	public void socketLeaveRoom( String socketId, String... rooms ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.leaveRoom( rooms );
+		}
+	}
+
+	public void socketLeaveAllRooms( String socketId ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.leaveAllRooms();
+		}
+	}
+
+	public void socketSend( String socketId, String event, Object... args ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.send( event, args );
+		}
+	}
+
+	public void socketSendWithCallback( String socketId, String event, Object[] args, String callbackRef ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.send( event, args, new SocketIoSocket.ReceivedByRemoteAcknowledgementCallback(){
+				@Override
+				public void onReceivedByRemote(Object... args) {
+					Object[] arrayArgs = args;
+					Object[] luceeArgs = { socketId, event, callbackRef, args };
+
+					_luceeCall( "onSocketSendCallback", luceeArgs );
+				}
+			} );
+		}
+	}
+
+	public void socketOn( String socketId, String event, String callbackRef ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.on( event, new Emitter.Listener() {
+				@Override
+				public void call(Object... args) {
+					Object[] arrayArgs = args;
+					Object[] luceeArgs = { socketId, event, callbackRef, args };
+
+					_luceeCall( "onSocketEvent", luceeArgs );
+				}
+			} );
+		}
 	}
 
 // PRIVATE
@@ -132,6 +205,18 @@ public class SocketIoServerWrapper {
 		HandlerList handlerList = new HandlerList();
 		handlerList.setHandlers( new Handler[] { servletContextHandler } );
 		mServer.setHandler( handlerList );
+	}
+
+	private SocketIoSocket _getSocket( String socketId ) {
+		return mSockets.get( socketId );
+	}
+
+	private void _luceeCall( String method, Object[] args ) {
+		try{
+			mCfcHandler.callMethod( method, args );
+		} catch( Exception e ) {
+			e.printStackTrace();
+		}
 	}
 
 	private static final class JettyNoLogging implements Logger {
