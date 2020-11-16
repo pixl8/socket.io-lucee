@@ -17,10 +17,14 @@
 
 			socket.on('disconnect', function(){
 				$( "#output" ).append( $( "<p>Disconnected!</p>" ) );
+
 			}).on( 'welcome', function( msg ) {
 				$( "#output" ).append( $( "<p><strong>" + msg + "</strong></p>" ) );
+
 			}).on( 'newmember', function( msg ) {
 				$( "#output" ).append( $( "<p><strong>" + msg + "</strong></p>" ) );
+			}).on( 'echo', function( msg ){
+				console.log( "ECHO:", msg );
 			});
 		});
 

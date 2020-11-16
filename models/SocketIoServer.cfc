@@ -78,7 +78,7 @@ component {
 				  arguments.namespace
 				, JavaCast( "String[]", arguments.rooms )
 				, arguments.event
-				, JavaCast( "Object[]", arguments.args )
+				, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
 			);
 		} else if ( Len( arguments.socketId ) ) {
 			if ( ArrayLen( arguments.rooms ) ) {
@@ -86,13 +86,13 @@ component {
 					  arguments.socketId
 					, JavaCast( "String[]", arguments.rooms )
 					, arguments.event
-					, JavaCast( "Object[]", arguments.args )
+					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
 				);
 			} else {
 				_getJavaServer().socketBroadcast(
 					  arguments.socketId
 					, arguments.event
-					, JavaCast( "Object[]", arguments.args )
+					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
 				);
 			}
 
@@ -108,7 +108,7 @@ component {
 		_getJavaServer().socketSend(
 			  arguments.socketId
 			, arguments.event
-			, args
+			, _prepareArgs( args )
 		);
 	}
 
@@ -192,6 +192,18 @@ component {
 		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
 
 		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
+	}
+
+	private array function _prepareArgs( required array args ) {
+		var javaServer = _getJavaServer();
+
+		for( var i=1; i<=ArrayLen( arguments.args ); i++ ) {
+			if ( !IsSimpleValue( arguments.args[ i ] ) ) {
+				arguments.args[ i ] = javaServer.toJsonObj( SerializeJson( arguments.args[ i ] ) );
+			}
+		}
+
+		return arguments.args;
 	}
 
 // GETTERS AND SETTERS

@@ -31,7 +31,7 @@ component {
 			socket.send( "welcome", [ "Welcome to chat! This is just for you: #socket.getId()#" ] );
 			socket.broadcast( "newmember", [ "Someone has joined the chat...#socket.getId()#" ] );
 			socket.on( "clientEvent", function( message="nope" ) {
-				Systemoutput( "onClientEvent: #SerializeJson( arguments.message )#" );
+				socket.broadcast( "echo", [ arguments.message ] );
 			} );
 		} );
 

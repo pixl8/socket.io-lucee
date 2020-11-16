@@ -13,6 +13,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter;
+import org.json.JSONObject;
 
 import java.util.*;
 import java.net.InetSocketAddress;
@@ -194,6 +195,11 @@ public class SocketIoServerWrapper {
 				}
 			} );
 		}
+	}
+
+// HELPERS
+	public JSONObject toJsonObj( String json ){
+		return new JSONObject( json );
 	}
 
 // PRIVATE
