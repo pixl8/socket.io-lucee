@@ -130,7 +130,7 @@ component {
 
 
 // UNDER-THE-HOOD LISTENER INTERFACE
-	public void function onConnect( required string namespace, required string socketId ) {
+	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$registerSocket( socketId );
 

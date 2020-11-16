@@ -3,6 +3,7 @@ package io.socket.socketio.server;
 import io.socket.emitter.Emitter;
 import io.socket.parser.Packet;
 import io.socket.parser.Parser;
+import io.socket.engineio.server.EngineIoSocket;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,7 @@ public final class SocketIoSocket extends Emitter {
     private final ConcurrentLinkedQueue<AllEventListener> mAllEventListeners = new ConcurrentLinkedQueue<>();
     private final SocketIoNamespaceImpl mNamespace;
     private final SocketIoClient mClient;
+    private final EngineIoSocket mConnection;
     private final SocketIoAdapter mAdapter;
     private final String mId;
 
@@ -73,9 +75,10 @@ public final class SocketIoSocket extends Emitter {
 
     private boolean mConnected;
 
-    SocketIoSocket(SocketIoNamespaceImpl namespace, SocketIoClient client) {
+    SocketIoSocket(SocketIoNamespaceImpl namespace, SocketIoClient client, EngineIoSocket connection) {
         mNamespace = namespace;
         mClient = client;
+        mConnection = connection;
         mAdapter = namespace.getAdapter();
         mId = (mNamespace.getName().equals("/"))? client.getId() : (mNamespace.getName() + "#" + client.getId());
 
@@ -108,6 +111,15 @@ public final class SocketIoSocket extends Emitter {
      */
     public SocketIoNamespace getNamespace() {
         return mNamespace;
+    }
+
+    /**
+     * Gets the underlying connection of this socket.
+     *
+     * @return Engine.io socket object
+     */
+    public EngineIoSocket getConnection() {
+        return mConnection;
     }
 
     /**

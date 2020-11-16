@@ -73,7 +73,7 @@ public class SocketIoServerWrapper {
 				SocketIoSocket socket = (SocketIoSocket) args[0];
 
 				mSockets.put( socket.getId(), socket );
-				Object[] luceeArgs = new Object[] { ns.getName(), socket.getId(), args };
+				Object[] luceeArgs = new Object[] { ns.getName(), socket.getId(), socket.getConnection().getInitialRequest() };
 
 				_luceeCall( "onConnect", luceeArgs );
 

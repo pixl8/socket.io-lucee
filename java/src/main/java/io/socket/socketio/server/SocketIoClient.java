@@ -162,7 +162,7 @@ final class SocketIoClient {
 
     private void doConnect(String namespace) {
         final SocketIoNamespaceImpl nsp = (SocketIoNamespaceImpl)mServer.namespace(namespace);
-        final SocketIoSocket socket = nsp.add(this);
+        final SocketIoSocket socket = nsp.add(this, mConnection);
         mSockets.put(socket.getId(), socket);
         mNamespaceSockets.put(namespace, socket);
     }

@@ -1,6 +1,7 @@
 package io.socket.socketio.server;
 
 import io.socket.engineio.server.ReadyState;
+import io.socket.engineio.server.EngineIoSocket;
 import io.socket.parser.Packet;
 import io.socket.parser.Parser;
 
@@ -52,8 +53,8 @@ final class SocketIoNamespaceImpl extends SocketIoNamespace {
      * @param client Client instance to add.
      * @return Socket instance created from client.
      */
-    synchronized SocketIoSocket add(SocketIoClient client) {
-        final SocketIoSocket socket = new SocketIoSocket(this, client);
+    synchronized SocketIoSocket add(SocketIoClient client, EngineIoSocket connection) {
+        final SocketIoSocket socket = new SocketIoSocket(this, client, connection);
         if (client.getConnection().getReadyState() == ReadyState.OPEN) {
             mSockets.put(socket.getId(), socket);
             socket.onConnect();
