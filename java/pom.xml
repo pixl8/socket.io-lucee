@@ -7,11 +7,6 @@
 	<name>SocketIO-Java Server Implementation with Lucee bindings</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.4.25.v20191220</version>
-		</dependency> -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
@@ -24,14 +19,14 @@
 		</dependency>
 		<dependency>
 			<groupId>io.socket</groupId>
-			<artifactId>socket.io-server</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>io.socket</groupId>
 			<artifactId>engine.io-server</artifactId>
 			<version>1.3.5</version>
 		</dependency>
+		<dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>socket.io-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 		 <dependency>
             <groupId>io.socket</groupId>
             <artifactId>engine.io-server-jetty</artifactId>
@@ -62,6 +57,7 @@
 					<target>8</target>
 					<includes>
 						<include>com/pixl8/socketiolucee/*.java</include>
+						<include>io/socket/socketio/server/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>

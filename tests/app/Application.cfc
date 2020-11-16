@@ -25,9 +25,14 @@ component {
 		}
 
 		var io = new socketiolucee.models.SocketIoServer();
+		var ns = io.of( "/admin" );
 
-		io.of( "/admin" ).on( "connect", function( socketid ){
-			SystemOutput( "we're connecting...#socketId#" );
+		ns.on( "connect", function( socket ){
+			socket.send( "welcome", [ "Welcome to chat! This is just for you: #socket.getId()#" ] );
+			socket.broadcast( "newmember", [ "Someone has joined the chat...#socket.getId()#" ] );
+			// socket.on( "clientEvent", function( message="nope" ) {
+			// 	Systemoutput( "onClientEvent: #SerializeJson( arguments.message )#" );
+			// } );
 		} );
 
 		application.io = io;

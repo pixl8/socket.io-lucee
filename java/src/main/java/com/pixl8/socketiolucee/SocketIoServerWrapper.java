@@ -45,6 +45,7 @@ public class SocketIoServerWrapper {
 		mSockets = Collections.synchronizedMap( new HashMap<String, SocketIoSocket>());
 
 		_setupJettyServer();
+		registerNamespace( "/", true );
 	}
 
 	public void startServer() throws Exception {
@@ -56,7 +57,11 @@ public class SocketIoServerWrapper {
 	}
 
 	public void registerNamespace( String namespace ) {
-		if ( hasNamespace( namespace ) ) {
+		registerNamespace( namespace, false );
+	}
+
+	public void registerNamespace( String namespace, boolean force ) {
+		if ( !force && hasNamespace( namespace ) ) {
 			return;
 		}
 
@@ -66,8 +71,9 @@ public class SocketIoServerWrapper {
 			@Override
 			public void call(Object... args) {
 				SocketIoSocket socket = (SocketIoSocket) args[0];
+
 				mSockets.put( socket.getId(), socket );
-				Object[] luceeArgs = new Object[] { ns.getName(), socket.getId() };
+				Object[] luceeArgs = new Object[] { ns.getName(), socket.getId(), args };
 
 				_luceeCall( "onConnect", luceeArgs );
 
@@ -102,14 +108,15 @@ public class SocketIoServerWrapper {
 	}
 
 // SOCKET PROXIES
-	public void socketBroadcast( String socketId, String room, String event, Object... args ) {
+	public void socketBroadcast( String socketId, String event, Object[] args ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
-			socket.broadcast( room, event, args );
+			socket.broadcast( event, args );
 		}
 	}
-	public void socketBroadcast( String socketId, String[] rooms, String event, Object... args ) {
+
+	public void socketBroadcast( String socketId, String[] rooms, String event, Object[] args ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
@@ -125,19 +132,19 @@ public class SocketIoServerWrapper {
 		}
 	}
 
-	public void socketJoinRoom( String socketId, String... rooms ) {
+	public void socketJoinRoom( String socketId, String room ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
-			socket.joinRoom( rooms );
+			socket.joinRoom( room );
 		}
 	}
 
-	public void socketLeaveRoom( String socketId, String... rooms ) {
+	public void socketLeaveRoom( String socketId, String room ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
-			socket.leaveRoom( rooms );
+			socket.leaveRoom( room );
 		}
 	}
 
@@ -173,7 +180,7 @@ public class SocketIoServerWrapper {
 		}
 	}
 
-	public void socketOn( String socketId, String event, String callbackRef ) {
+	public void socketOn( String namespace, String socketId, String event ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
@@ -181,7 +188,7 @@ public class SocketIoServerWrapper {
 				@Override
 				public void call(Object... args) {
 					Object[] arrayArgs = args;
-					Object[] luceeArgs = { socketId, event, callbackRef, args };
+					Object[] luceeArgs = { namespace, socketId, event, args };
 
 					_luceeCall( "onSocketEvent", luceeArgs );
 				}

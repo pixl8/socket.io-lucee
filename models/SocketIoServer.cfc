@@ -19,25 +19,6 @@ component {
 	}
 
 // PUBLIC API
-	/**
-	 * Retrieve a Socket.io namespace object. This will be used to emit and
-	 * receive messages.
-	 *
-	 */
-	public SocketIoNamespace function namespace( required string namespace ) {
-		_getJavaServer().registerNamespace( arguments.namespace );
-
-		if ( !StructKeyExists( variables._namespaces, arguments.namespace ) ) {
-			var ns = new SocketIoNamespace(
-				  name   = arguments.namespace
-				, server = this
-			);
-
-			variables._namespaces[ arguments.namespace ] = ns;
-		}
-
-		return variables._namespaces[ arguments.namespace ];
-	}
 
 	/**
 	 * This is what socket.io server named their method
@@ -48,6 +29,26 @@ component {
 	 */
 	public SocketIoNamespace function of( required string namespace ) {
 		return this.namespace( arguments.namespace );
+	}
+
+	/**
+	 * Retrieve a Socket.io namespace object. This will be used to emit and
+	 * receive messages.
+	 *
+	 */
+	public SocketIoNamespace function namespace( required string namespace ) {
+		_getJavaServer().registerNamespace( arguments.namespace );
+
+		if ( !StructKeyExists( variables._namespaces, arguments.namespace ) ) {
+			var ns = new SocketIoNamespace(
+				  name     = arguments.namespace
+				, ioserver = this
+			);
+
+			variables._namespaces[ arguments.namespace ] = ns;
+		}
+
+		return variables._namespaces[ arguments.namespace ];
 	}
 
 // START/STOP SERVER
@@ -64,23 +65,104 @@ component {
 	public void function close() { this.stop(); }
 	public void function shutdown() { this.stop(); }
 
+// PACKAGE METHODS FOR INTERNAL USE
+	package void function $broadcast(
+		  required string event
+		,          array  args  = []
+		,          array  rooms = []
+		,          string namespace = ""
+		,          string socketId  = ""
+	) {
+		if ( Len( arguments.namespace ) ) {
+			_getJavaServer().namespaceBroadcast(
+				  arguments.namespace
+				, JavaCast( "String[]", arguments.rooms )
+				, arguments.event
+				, JavaCast( "Object[]", arguments.args )
+			);
+		} else if ( Len( arguments.socketId ) ) {
+			if ( ArrayLen( arguments.rooms ) ) {
+				_getJavaServer().socketBroadcast(
+					  arguments.socketId
+					, JavaCast( "String[]", arguments.rooms )
+					, arguments.event
+					, JavaCast( "Object[]", arguments.args )
+				);
+			} else {
+				_getJavaServer().socketBroadcast(
+					  arguments.socketId
+					, arguments.event
+					, JavaCast( "Object[]", arguments.args )
+				);
+			}
+
+		}
+
+	}
+
+	package void function $send(
+		  required string socketId
+		, required string event
+		,          array  args = []
+	) {
+		_getJavaServer().socketSend(
+			  arguments.socketId
+			, arguments.event
+			, args
+		);
+	}
+
+	package void function $joinRoom( required string socketId, required string roomName ) {
+		_getJavaServer().socketJoinRoom( arguments.socketId, arguments.roomName );
+	}
+
+	package void function $leaveRoom( required string socketId, required string roomName ) {
+		_getJavaServer().socketLeaveRoom( arguments.socketId, arguments.roomName );
+	}
+
+	package void function $leaveAllRooms( required string socketId ) {
+		_getJavaServer().socketLeaveAllRooms( arguments.socketId );
+	}
+
+	package void function $registerOn( required string namespace, required string socketId, required string event ) {
+		_getJavaServer().socketOn( arguments.namespace, arguments.socketId, arguments.event );
+	}
+
+
 // UNDER-THE-HOOD LISTENER INTERFACE
 	public void function onConnect( required string namespace, required string socketId ) {
-		this.namespace( arguments.namespace ).runEvent( "connect", [ socketId ] );
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$registerSocket( socketId );
+
+		ns.$runEvent( "connect", [ socket ] );
 	}
 	public void function onDisconnecting( required string namespace, required string socketId ) {
-		// TODO
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$getSocket( socketId );
+
+		ns.$runEvent( "disconnecting", [ socket ] );
 	}
 	public void function onDisconnect( required string namespace, required string socketId ) {
-		// TODO
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$getSocket( socketId );
+
+		try {
+			ns.$runEvent( "disconnect", [ socket ] );
+		} catch( any e ) {
+			rethrow;
+		} finally {
+			ns.$deRegisterSocket( socketId );
+		}
+	}
+	public void function onSocketEvent( required string namespace, required string socketId, required string event, array args ) {
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$getSocket( socketId );
+
+		socket.$runEvent( arguments.event, args );
 	}
 	public void function onSocketSendCallback( required string socketId, required string event, required string callbackRef, array args ) {
 		// TODO
 	}
-	public void function onSocketEvent( required string socketId, required string event, required string callbackRef, array args ) {
-		// TODO
-	}
-
 
 // PRIVATE HELPERS
 	private any function _getJavaServer() {
