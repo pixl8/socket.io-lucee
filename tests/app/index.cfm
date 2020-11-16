@@ -7,7 +7,9 @@
 	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 	<script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 	<script>
-		var socket = io( "127.0.0.1:3000/admin" );
+		var socket = io( "127.0.0.1:3000/admin", {
+			query : "dummy=password"
+		} );
 
 		socket.on( 'connect', function(){
 			setTimeout(function(){
@@ -23,8 +25,12 @@
 
 			}).on( 'newmember', function( msg ) {
 				$( "#output" ).append( $( "<p><strong>" + msg + "</strong></p>" ) );
+
 			}).on( 'echo', function( msg ){
 				console.log( "ECHO:", msg );
+
+			}).on( 'denied', function( msg ){
+				$( "#output" ).append( $( "<p><strong style='color:red;'>" + msg + "</strong></p>" ) );
 			});
 		});
 

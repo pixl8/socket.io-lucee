@@ -27,12 +27,21 @@ component {
 		var io = new socketiolucee.models.SocketIoServer();
 		var ns = io.of( "/admin" );
 
-		ns.on( "connect", function( socket ){
-			socket.send( "welcome", [ "Welcome to chat! This is just for you: #socket.getId()#" ] );
-			socket.broadcast( "newmember", [ "Someone has joined the chat...#socket.getId()#" ] );
-			socket.on( "clientEvent", function( message="nope" ) {
-				socket.broadcast( "echo", [ arguments.message ] );
-			} );
+		ns.on( "connect", function( socket, req ){
+			var params = req.getRequestParams();
+			var dummy = params.dummy ?: "";
+
+			if ( dummy == "password" ) {
+				socket.send( "welcome", [ "Welcome to chat! This is just for you: #socket.getId()#" ] );
+				socket.joinRoom( "secure" );
+				socket.broadcast( "newmember", [ "Someone has joined the chat...#socket.getId()#" ], [ "secure" ] );
+				socket.on( "clientEvent", function( message="nope" ) {
+					socket.broadcast( "echo", [ arguments.message ], [ "secure" ] );
+				} );
+			} else {
+				socket.send( "denied", [ "Your name's not on the door, not coming in!" ] );
+			}
+
 		} );
 
 		application.io = io;
