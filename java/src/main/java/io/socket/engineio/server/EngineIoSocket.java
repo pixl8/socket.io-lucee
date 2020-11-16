@@ -9,11 +9,15 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,6 +47,7 @@ public final class EngineIoSocket extends Emitter {
     private ReadyState mReadyState;
     private Transport mTransport;
     private AtomicBoolean mUpgrading = new AtomicBoolean(false);
+    private Map<String, Object> mInitialRequest = new ConcurrentHashMap<>();
 
     EngineIoSocket(Object lockObject, String sid, EngineIoServer server, EngineIoSocketTimeoutHandler pingTimeoutHandler) {
         mLockObject = lockObject;
@@ -107,7 +112,8 @@ public final class EngineIoSocket extends Emitter {
      * @param initialRequest The initial HTTP request the caused the connection.
      */
     void init(Transport transport, @SuppressWarnings("unused") HttpServletRequest initialRequest) {
-        setTransport(transport);
+        setTransport( transport );
+        setInitialRequest( initialRequest );
         onOpen();
     }
 
@@ -324,5 +330,49 @@ public final class EngineIoSocket extends Emitter {
                     mServer.getOptions().getPingInterval() + mServer.getOptions().getPingTimeout(),
                     TimeUnit.MILLISECONDS);
         }
+    }
+
+    private void setInitialRequest( HttpServletRequest req ) {
+        Cookie[] cookies = req.getCookies();
+        String uri = req.getRequestURI();
+        String qs = req.getQueryString();
+        String remoteUser = req.getRemoteUser();
+
+        if ( cookies != null ) {
+            mInitialRequest.put( "cookies", cookies );
+        }
+
+        if ( uri != null ) {
+            mInitialRequest.put( "uri", uri );
+        } else {
+            mInitialRequest.put( "uri", "" );
+        }
+
+        if ( qs != null ) {
+            mInitialRequest.put( "querystring", qs );
+        } else {
+            mInitialRequest.put( "querystring", "" );
+        }
+
+        if ( remoteUser != null ) {
+            mInitialRequest.put( "remoteUser", remoteUser );
+        } else {
+            mInitialRequest.put( "remoteUser", "" );
+        }
+
+        Enumeration<String> headerNames = req.getHeaderNames();
+        Map<String, String> headers = new ConcurrentHashMap<>();
+
+        if (headerNames != null) {
+            while ( headerNames.hasMoreElements() ) {
+                String headerName = headerNames.nextElement();
+                headers.put( headerName, req.getHeader( headerName ) );
+            }
+        }
+        mInitialRequest.put( "headers", headers );
+    }
+
+    public Map getInitialRequest() {
+        return mInitialRequest;
     }
 }
