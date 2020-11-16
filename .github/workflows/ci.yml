@@ -11,6 +11,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Build docs
+        if: github.ref == 'refs/heads/stable'
+        uses: tsunematsu21/actions-publish-gh-pages@v1.0.1
+        with:
+          dir: docs
+          branch: stable
+          token: ${{ secrets.ACCESS_TOKEN }}
+
       - name: Build jars
         run: cd java && mvn package
 
