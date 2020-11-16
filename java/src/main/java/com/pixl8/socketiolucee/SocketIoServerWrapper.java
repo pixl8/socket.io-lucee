@@ -101,10 +101,10 @@ public class SocketIoServerWrapper {
 	}
 
 // NAMESPACE PROXIES
-	public void namespaceBroadcast( String ns, String room, String event, Object... args ) {
-		mSocketIoServer.namespace( ns ).broadcast( room, event, args );
+	public void namespaceBroadcast( String ns, String event, Object[] args ) {
+		namespaceBroadcast( ns, new String[]{ ns }, event, args );
 	}
-	public void namespaceBroadcast( String ns, String[] rooms, String event, Object... args ) {
+	public void namespaceBroadcast( String ns, String[] rooms, String event, Object[] args ) {
 		mSocketIoServer.namespace( ns ).broadcast( rooms, event, args );
 	}
 

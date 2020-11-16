@@ -5,10 +5,12 @@ component {
 
 	processingdirective preserveCase="true";
 
-	public void function onRequest() output=true {
+	public void function onRequest( required string requestedTemplate ) output=true {
 		_reloadCheck();
 
-		include template="/index.cfm";
+		var io = application.io;
+
+		include template=arguments.requestedTemplate;
 	}
 
 // private helpers

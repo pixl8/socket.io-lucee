@@ -31,6 +31,9 @@
 
 			}).on( 'denied', function( msg ){
 				$( "#output" ).append( $( "<p><strong style='color:red;'>" + msg + "</strong></p>" ) );
+
+			}).on( 'alert', function( msg ){
+				$( "#output" ).append( $( "<p><strong style='color:red;'>" + msg + "</strong></p>" ) );
 			});
 		});
 
