@@ -13,10 +13,21 @@ component {
 			var orderedArgs = createObject( "java", "java.util.TreeMap" ).init();
 			var index = 0;
 			for( var arg in arguments.args ){
-				orderedArgs.put( JavaCast( "String", ++index ), arg );
+				orderedArgs.put( JavaCast( "String", ++index ), _convertArg( arg ) );
 			}
 			_eventHandlers[ arguments.event ]( argumentCollection=orderedArgs );
 		}
+	}
+
+// PRIVATE HELPERS
+	private any function _convertArg( required any arg ) {
+		if ( IsSimpleValue( arguments.arg ) ) {
+			return arg;
+		} else if ( IsInstanceOf( arg, "org.json.JSONObject" ) ) {
+			return DeserializeJson( arg.toString() );
+		}
+
+		return arg;
 	}
 
 }

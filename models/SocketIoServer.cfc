@@ -154,7 +154,7 @@ component {
 			ns.$deRegisterSocket( socketId );
 		}
 	}
-	public void function onSocketEvent( required string namespace, required string socketId, required string event, array args ) {
+	public void function onSocketEvent( required string namespace, required string socketId, required string event, array args=[] ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$getSocket( socketId );
 

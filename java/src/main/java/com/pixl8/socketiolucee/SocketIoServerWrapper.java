@@ -172,7 +172,7 @@ public class SocketIoServerWrapper {
 				@Override
 				public void onReceivedByRemote(Object... args) {
 					Object[] arrayArgs = args;
-					Object[] luceeArgs = { socketId, event, callbackRef, args };
+					Object[] luceeArgs = { socketId, event, callbackRef, arrayArgs };
 
 					_luceeCall( "onSocketSendCallback", luceeArgs );
 				}
@@ -188,7 +188,7 @@ public class SocketIoServerWrapper {
 				@Override
 				public void call(Object... args) {
 					Object[] arrayArgs = args;
-					Object[] luceeArgs = { namespace, socketId, event, args };
+					Object[] luceeArgs = { namespace, socketId, event, arrayArgs };
 
 					_luceeCall( "onSocketEvent", luceeArgs );
 				}
