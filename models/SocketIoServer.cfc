@@ -128,6 +128,10 @@ component {
 		_getJavaServer().socketOn( arguments.namespace, arguments.socketId, arguments.event );
 	}
 
+	package void function $disconnect( required string socketId, required boolean close ) {
+		_getJavaServer().socketDisconnect( arguments.socketId, arguments.close );
+	}
+
 
 // UNDER-THE-HOOD LISTENER INTERFACE
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {

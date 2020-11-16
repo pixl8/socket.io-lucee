@@ -38,4 +38,9 @@ component accessors=true extends="base.EventEmitter" {
 		ioserver.$leaveAllRooms( socketId=id );
 	}
 
+	public void function disconnect( required boolean close ) {
+		namespace.$deRegisterSocket( socketId=id );
+		ioserver.$disconnect( socketId=id, close=arguments.close );
+	}
+
 }
