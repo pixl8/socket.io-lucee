@@ -14,11 +14,10 @@ jobs:
 
       - name: Build docs
         if: github.ref == 'refs/heads/stable'
-        uses: tsunematsu21/actions-publish-gh-pages@v1.0.1
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          dir: docs
-          branch: stable
-          token: ${{ secrets.ACCESS_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
 
       - name: Build jars
         run: cd java && mvn package
