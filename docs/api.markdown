@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Generated API Docs
+title: API Docs
 permalink: /generatedapi/
 nav_order: 4
 ---
