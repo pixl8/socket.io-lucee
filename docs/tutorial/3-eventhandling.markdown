@@ -28,7 +28,7 @@ private void function setupListeners() {
     // an example of a later event
     thread socket=socket name="bg-thrd-#socket.getId()#" {
       sleep( 4000 );
-      socket.send( "Sent a message 4 seconds after connection!"" );
+      socket.send( "Sent a message 4 seconds after connection!" );
     }
   } );
 }
@@ -56,6 +56,90 @@ Try it out in your browser. You will need to add `?fwreinit=true` in the URL for
 
 ## Custom events
 
-TODO
+The `message` event has limited use. In a real application we will want to differentiate between different events to control behaviour.
+
+Socket.IO allows us to fire off custom events. To do this from the server, we will use `socket.emit( eventName, args )`:
+
+```cfc
+private void function setupListeners() {
+  var io = application.io;
+
+  io.on( "connect", function( socket ){
+    SystemOutput( "A user connected..." );
+
+    socket.on( "disconnect", function() {
+      SystemOutput( "A user disconnected" );
+    });
+
+    thread socket=socket name="bg-thrd-#socket.getId()#" {
+      sleep( 4000 );
+
+      // use socket.emit() for custom events direct to a socket
+      socket.emit( "testEvent", "Sent a testEvent 4 seconds after connection!" );
+    }
+  } );
+}
+```
+
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.io-Lucee: Tutorial</title>
+  <script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
+  <script>
+    var socket = io( "127.0.0.1:3000" );
+
+    socket.on('testEvent', function(data){document.write(data)});
+  </script>
+</head>
+<body>
+</body>
+```
+
+Reload the application and try it out in your browser.
+
+## Client to server events
+
+We can also use `socket.emit()` from the client side to send messages to the server:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.io-Lucee: Tutorial</title>
+  <script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
+  <script>
+    var socket = io( "127.0.0.1:3000" );
+
+    socket.emit('clientEvent', 'Hello from the client');
+  </script>
+</head>
+<body>
+</body>
+```
+
+Use `socket.on()` to listen to the event from the server side:
+
+```cfc
+private void function setupListeners() {
+  var io = application.io;
+
+  io.on( "connect", function( socket ){
+    SystemOutput( "A user connected..." );
+
+    socket.on( "disconnect", function() {
+      SystemOutput( "A user disconnected" );
+    });
+
+    socket.on( "clientEvent", function( msg ) {
+      SystemOutput( "Client event received: " & arguments.msg );
+    });    
+  } );
+}
+```
+
+Reload the application and watch your CommanxBox console logs for messages from the client.
 
 **Next:** [4. Broadcasting](4-broadcasting.html)

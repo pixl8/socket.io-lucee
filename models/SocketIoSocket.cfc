@@ -32,11 +32,11 @@ component accessors=true {
 	 * Sends a direct event to the connected client.
 	 *
 	 * @event.hint The name of the event to send.
-	 * @args.hint Array of arguments to send to any registered client listener functions for this event.
+	 * @args.hint  Single argument, or array of arguments to send to any registered client listener functions for this event.
 	 */
 	public void function emit(
 		  required string event
-		,          array  args  = []
+		,          any    args = []
 	) {
 		ioserver.$send( argumentCollection=arguments, socketId=id );
 	}

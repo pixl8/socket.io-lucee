@@ -16,19 +16,17 @@ component {
 	private void function setupListeners() {
 		var io = application.io;
 
-		// log connections and disconnections
 		io.on( "connect", function( socket ){
-			SystemOutput( "A user connected...#arguments.socket.getId()#" );
+			SystemOutput( "A user connected..." );
 
 			socket.on( "disconnect", function() {
-				SystemOutput( "A user disconnected" );
+			  	SystemOutput( "A user disconnected" );
 			});
 
-			thread socket=socket name="bg-thrd-#socket.getId()#" {
-				sleep( 4000 );
-				socket.send('Sent a message 4 seconds after connection!');
-			}
-		} );
+			socket.on( "clientEvent", function( msg ) {
+				SystemOutput( "Client event received: #msg#" )
+			} );
+	  } );
 	}
 
 	private void function reloadCheck() {

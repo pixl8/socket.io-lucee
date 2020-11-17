@@ -158,8 +158,11 @@ component {
 	package void function $send(
 		  required string socketId
 		, required string event
-		,          array  args = []
+		,          any    args = []
 	) {
+		if ( !IsArray( arguments.args ) ) {
+			arguments.args = [ arguments.args ];
+		}
 		_getJavaServer().socketSend(
 			  arguments.socketId
 			, arguments.event
