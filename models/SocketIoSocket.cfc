@@ -1,12 +1,14 @@
-component accessors=true extends="base.EventEmitter" {
+component accessors=true {
 
 	property name="id"        type="string";
 	property name="namespace" type="SocketIoNamespace";
 	property name="ioserver"  type="SocketIoServer";
 
+	variables._eventHandlers = {};
+
 // PUBLIC API
 	public void function on( required string event, required any action ) {
-		super.on( argumentCollection=arguments );
+		variables._eventHandlers[ arguments.event ] = arguments.action;
 
 		ioserver.$registerOn( namespace=namespace.getName(), socketId=id, event=arguments.event );
 	}
@@ -47,6 +49,15 @@ component accessors=true extends="base.EventEmitter" {
 	public void function disconnect( required boolean close ) {
 		namespace.$deRegisterSocket( socketId=id );
 		ioserver.$disconnect( socketId=id, close=arguments.close );
+	}
+
+// PROTECTED PACKAGE INTERNALS
+	package void function $runEvent( required string event, required array args ) {
+		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
+			_eventHandlers[ arguments.event ](
+				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
+			);
+		}
 	}
 
 }

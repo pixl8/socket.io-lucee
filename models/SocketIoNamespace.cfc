@@ -1,11 +1,16 @@
-component accessors=true extends="base.EventEmitter" {
+component accessors=true {
 
 	property name="name"     type="string";
 	property name="ioserver" type="SocketIoServer";
 
 	variables._sockets = {};
+	variables._eventHandlers = {};
 
 // PUBLIC API
+	public void function on( required string event, required any action ) {
+		variables._eventHandlers[ arguments.event ] = arguments.action;
+	}
+
 	public void function broadcast(
 		  required string event
 		,          any    args  = []
@@ -39,6 +44,14 @@ component accessors=true extends="base.EventEmitter" {
 
 	package void function $deRegisterSocket( required string socketId ) {
 		StructDelete( variables._sockets, arguments.socketId );
+	}
+
+	package void function $runEvent( required string event, required array args ) {
+		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
+			_eventHandlers[ arguments.event ](
+				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
+			);
+		}
 	}
 
 }
