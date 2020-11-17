@@ -27,7 +27,7 @@ component {
 		}
 
 		var io = new socketiolucee.models.SocketIoServer();
-		var ns = io.of( "/admin" );
+		var ns = io.sockets;
 
 		ns.on( "connect", function( socket, req ){
 			var params = req.getRequestParams();
@@ -42,6 +42,7 @@ component {
 				} );
 			} else {
 				socket.send( "denied", [ "Your name's not on the door, not coming in!" ] );
+				socket.disconnect( false );
 			}
 
 		} );

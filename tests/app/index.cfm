@@ -7,7 +7,7 @@
 	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 	<script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 	<script>
-		var socket = io( "127.0.0.1:3000/admin", {
+		var socket = io( "127.0.0.1:3000/", {
 			query : "dummy=password"
 		} );
 

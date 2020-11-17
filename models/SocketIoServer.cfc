@@ -2,6 +2,8 @@ component {
 
 	variables._namespaces = {};
 
+	this.sockets = new SocketIoNamespace(); // this will be alias for root namespace
+
 // CONSTRUCTOR
 	public any function init(
 		  string  host  = ListFirst( cgi.http_host, ":" )
@@ -187,6 +189,8 @@ component {
 				, _getHost()                               // host
 				, _getPort()                               // port
 			);
+
+			this.sockets = of( "/" );
 		}
 
 		return variables._javaServer;
