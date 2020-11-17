@@ -112,3 +112,5 @@ Make sure we handle our new welcome `message` event in the client side:
 ```
 
 Reload the application and repeat the experiment from before. Notice now how the new client gets the welcome message while existing clients get the client connected count.
+
+**Next:** [5. Namespaces](5-namespaces.html)

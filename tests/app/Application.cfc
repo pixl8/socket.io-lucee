@@ -13,15 +13,34 @@ component {
 	}
 
 // private helpers
-private void function setupListeners() {
-  var io = application.io;
-  var ns = io.of( "/admin" );
+	private void function setupListeners() {
+		var users    = application.users = [];
+		var userMaps = application.userMaps = {};
+		var io       = application.io;
 
-  ns.on( "connect", function( socket ){
-    socket.send( "Welcome to the admin namespace...!" );
-  } );
-}
+		// note: this not thread safe - just a rough demo
+		io.on( "connect", function( socket ){
+			socket.on('setUsername', function( username ) {
+				if( ArrayFindNoCase( users, username ) ) {
+					socket.emit('userExists', username & ' username is taken! Try some other username.');
+				} else {
+					ArrayAppend( users, username );
+					userMaps[ socket.getId() ] = username;
+					socket.emit('userSet', username );
+				}
+			});
 
+			socket.on('msg', function(msg) {
+				io.sockets.emit('newmsg', msg);
+			});
+
+			socket.on('disconnect', function() {
+				if ( Len( userMaps[ socket.getId() ] ?: "" ) ) {
+					ArrayDelete( users, userMaps[ socket.getId() ] );
+				}
+			} );
+		} );
+	}
 
 	private void function reloadCheck() {
 		// Setup our server and listeners if either`?fwreinit=true` is
