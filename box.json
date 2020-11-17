@@ -1,6 +1,7 @@
 {
     "name":"Socket.IO-Lucee",
     "slug":"socketiolucee",
+    "type":"projects",
     "version":"$VERSION_NUMBER",
     "location":"$DOWNLOAD_URL",
     "author":"Pixl8 Group",
