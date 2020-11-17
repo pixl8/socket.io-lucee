@@ -47,7 +47,11 @@ component accessors=true {
 	 * @message.hint The message to send.
 	 */
 	public void function send( required string message ) {
-		this.emit( event="message", args=[ arguments.message ] );
+		ioserver.$send(
+			  event    = "message"
+			, args     = [ arguments.message ]
+		 	, socketId = id
+		 );
 	}
 
 	/**
