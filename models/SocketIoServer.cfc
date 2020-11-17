@@ -125,12 +125,20 @@ component {
 		}
 
 		if ( Len( arguments.namespace ) ) {
-			_getJavaServer().namespaceBroadcast(
-				  arguments.namespace
-				, JavaCast( "String[]", arguments.rooms )
-				, arguments.event
-				, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
-			);
+			if ( ArrayLen( arguments.rooms ) ) {
+				_getJavaServer().namespaceBroadcast(
+					  arguments.namespace
+					, JavaCast( "String[]", arguments.rooms )
+					, arguments.event
+					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
+				);
+			} else {
+				_getJavaServer().namespaceBroadcast(
+					  arguments.namespace
+					, arguments.event
+					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
+				);
+			}
 		} else if ( Len( arguments.socketId ) ) {
 			if ( ArrayLen( arguments.rooms ) ) {
 				_getJavaServer().socketBroadcast(
