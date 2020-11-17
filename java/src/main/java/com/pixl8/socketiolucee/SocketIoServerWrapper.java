@@ -165,22 +165,6 @@ public class SocketIoServerWrapper {
 		}
 	}
 
-	public void socketSendWithCallback( String socketId, String event, Object[] args, String callbackRef ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.send( event, args, new SocketIoSocket.ReceivedByRemoteAcknowledgementCallback(){
-				@Override
-				public void onReceivedByRemote(Object... args) {
-					Object[] arrayArgs = args;
-					Object[] luceeArgs = { socketId, event, callbackRef, arrayArgs };
-
-					_luceeCall( "onSocketSendCallback", luceeArgs );
-				}
-			} );
-		}
-	}
-
 	public void socketOn( String namespace, String socketId, String event ) {
 		SocketIoSocket socket = _getSocket( socketId );
 

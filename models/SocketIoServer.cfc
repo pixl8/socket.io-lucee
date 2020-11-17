@@ -173,9 +173,6 @@ component {
 
 		socket.$runEvent( arguments.event, args );
 	}
-	public void function onSocketSendCallback( required string socketId, required string event, required string callbackRef, array args ) {
-		// TODO
-	}
 
 // PRIVATE HELPERS
 	private any function _getJavaServer() {
