@@ -72,12 +72,6 @@ component accessors=true {
 	}
 
 	/**
-	 * Alias of 'broadcast'
-	 *
-	 */
-	public void function emit() { broadcast( argumentCollection=arguments ); }
-
-	/**
 	 * Registers the connected client to the given room name.
 	 *
 	 * @roomName.hint The name of the room
