@@ -67,6 +67,17 @@ component {
 		return variables._namespaces[ arguments.namespace ];
 	}
 
+	/**
+	 * Register an event listener with the default namespace (proxy to namespace.on()).
+	 *
+	 * @event.hint The name of the event to listen to, valid values are: connect, disconnect and disconnecting
+	 * @callback.hint Closure function with which to handle the event. The function will be passed a socket object as its single argument.
+	 */
+	public void function on( required string event, required any callback ) {
+		return this.of( "/" ).on( argumentCollection=arguments );
+	}
+
+
 // START/STOP SERVER
 	/**
 	 * Starts the server, if it has not already started.

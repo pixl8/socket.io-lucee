@@ -63,4 +63,4 @@ box start --console
 
 This should start the server and open up a browser window loading our `index.cfm` file (an empty HTML page). We're all set!
 
-**Next:** [2. Hello world](2-helloworld.html)
+**Next:** [2. Making a connection](2-connection.html)
