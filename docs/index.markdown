@@ -8,13 +8,15 @@ nav_order: 1
 
 **Socket.io-Lucee** is a [Socket.IO](https://socket.io/) server implementation for the [Lucee webserver](https://www.lucee.org). Socket.IO is a javascript library for realtime web applications. You can use the **Socket.io-lucee** project to marry your Lucee server with your frontend client(s) using the Socket.IO client library.
 
+**The project is currently in an ALPHA state. This means it is suitable for experimenting with, but unlikely that it is ready for production use. We have implemented much of the core feature set, but there is much to do to ensure that we have a robust, performant and feature complete set.**
+
 ## A note on Socket.IO version compatibility
 
 **Important note:** The project currently supports up to version `2.3.1` of the Socket.IO client. Version `3.0.0` has very recently been released (as of November 2020) and we will need to wait for downstream project updates before we can tackle the upgrade.
 
 ## Getting started
 
-We recommend you follow the [installation guide](/installing/) and [getting started tutorial](/tutorial/). However, below is a super-brief outline of how you use the project:
+We recommend you follow the [installation guide](installing/) and [getting started tutorial](tutorial/). However, below is a super-brief outline of how you use the project:
 
 ### Lucee code
 

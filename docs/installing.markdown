@@ -7,8 +7,6 @@ nav_order: 3
 
 # How to install this project
 
-*Note: the instructions here will only be valid after we have made our first release.*
-
 ## Direct from Github
 
 Packaged releases are available straight from the Github project. Head to the releases page to download a zip file of a particular version:
@@ -26,7 +24,7 @@ io = new luceesocketio.models.SocketIoServer();
 We publish releases to [Forgebox](https://forgebox.io) and you can install them using CommandBox with:
 
 ```
-box install socket-io-lucee
+box install socketiolucee
 ```
 
 This will create a `socket.io-lucee` directory at the root of the install. If you wish to install it somewhere else you can specify the installation directory with the `box install` command (see [CommandBox documentation](https://commandbox.ortusbooks.com/package-management/installing-packages) for details).

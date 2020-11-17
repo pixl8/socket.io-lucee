@@ -1,0 +1,33 @@
+{
+    "name":"Socket.IO-Lucee",
+    "slug":"socketiolucee",
+    "version":"$VERSION_NUMBER",
+    "location":"$DOWNLOAD_URL",
+    "author":"Pixl8 Group",
+    "createPackageDirectory":"true",
+    "Homepage":"https://github.com/pixl8/socket.io-lucee",
+    "Documentation":"https://pixl8.github.io/socket.io-lucee/",
+    "Repository": {
+        "type":"git",
+        "URL":"https://github.com/pixl8/socket.io-lucee"
+    },
+    "Bugs":"https://github.com/pixl8/socket.io-lucee/issues",
+    "shortDescription":"Socket.IO Server Protocol implementation for Lucee 5 applications",
+    "keywords": [ "websockets", "Socket.IO", "lucee"],
+    "engines": [{
+        "type":"lucee",
+        "version":">=5.3.x"
+    }],
+    "License" : [{
+        "type": "LGPLv2",
+        "URL": "https://github.com/pixl8/socket.io-lucee/blob/stable/LICENSE.txt"
+    }],
+    "ignore":[
+        ".git/*",
+        ".gitignore",
+        ".github/*",
+        "docs/*",
+        "java/*",
+        "tests/*"
+    ],
+}

@@ -16,7 +16,7 @@ Once you have CommandBox installed and working, create an empty directory for th
 ```bash
 mkdir -p ~/lucee-socket-io-tutorial
 cd ~/lucee-socket-io-tutorial
-box install socket-io-lucee
+box install socketiolucee
 ```
 
 Next, add the two files below to the root of the directory:
