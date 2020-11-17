@@ -1,3 +1,11 @@
+/**
+ * Represents a single socket connection.
+ * The socket object can be used to send direct
+ * messages, to join/leave rooms and to broadcast
+ * to other sockets within the namespace and optional
+ * rooms.
+ *
+ */
 component accessors=true {
 
 	property name="id"          type="string";

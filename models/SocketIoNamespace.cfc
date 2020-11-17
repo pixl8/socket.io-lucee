@@ -1,3 +1,12 @@
+/**
+ * Represends a Socket-IO Namespace.
+ * Listen to the <code>on( "connect", callback )</code> event
+ * to get a Socket and register specific listeners
+ * for your connections. In addition, you can broadcast
+ * messages to all socket connections in the namespace.
+ *
+ *
+ */
 component accessors=true {
 
 	property name="name"     type="string";
@@ -7,10 +16,33 @@ component accessors=true {
 	variables._eventHandlers = {};
 
 // PUBLIC API
-	public void function on( required string event, required any action ) {
-		variables._eventHandlers[ arguments.event ] = arguments.action;
+	/**
+	 * Register a callback listener for the given event. Supported events are:<br>
+	 * <ul>
+	 * <li>connect</li>
+	 * <li>disconnect</li>
+	 * <li>disconnecting</li>
+	 * </ul>
+	 * All event callbacks will receive a socket object as their sole argument.
+	 *
+	 * @event.hint The name of the event (either 'connect', 'disconnect' or 'disconnecting')
+	 * @callback.hint Closure function with logic to process the event
+	 */
+	public void function on( required string event, required any callback ) {
+		variables._eventHandlers[ arguments.event ] = arguments.callback;
 	}
 
+	/**
+	 * The broadcast method allows you to send an event to either:<br>
+	 * <ul>
+	 * <li>All connected sockets in the namespace</li>
+	 * <li>All connected sockets in the provided room(s) within the namespace</li>
+	 * </ul>
+	 *
+	 * @event.hint The name of the event to broadcast
+	 * @args.hint Either a single argument, or array of arguments that the client event listener will receive
+	 * @rooms.hint Either a single room name, or array of room names whose occupants will receive the event. If no rooms supplied, all connections to the namespace will receive the event.
+	 */
 	public void function broadcast(
 		  required string event
 		,          any    args  = []
@@ -26,6 +58,11 @@ component accessors=true {
 	public void function emit() { broadcast( argumentCollection=arguments ); }
 
 // PROTECTED INTERNAL METHODS
+	/**
+	 * Internal method that deals with keeping track of sockets
+	 * connected to this namespace.
+	 *
+	 */
 	package SocketIoSocket function $registerSocket( required string socketId ) {
 		if ( !StructKeyExists( variables._sockets, arguments.socketId ) ) {
 			variables._sockets[ arguments.socketId ] = new SocketIoSocket(
@@ -38,14 +75,29 @@ component accessors=true {
 		return variables._sockets[ arguments.socketId ];
 	}
 
+	/**
+	 * Internal helper method that allows us to get a socket object from
+	 * a socket ID.
+	 *
+	 */
 	package SocketIoSocket function $getSocket( required string socketId ) {
 		return variables._sockets[ arguments.socketId ] ?: $registerSocket( arguments.socketId );
 	}
 
+	/**
+	 * Internal helper method that deals with keeping track of sockets that
+	 * have disconnected from the namespace.
+	 *
+	 */
 	package void function $deRegisterSocket( required string socketId ) {
 		StructDelete( variables._sockets, arguments.socketId );
 	}
 
+	/**
+	 * Internal helper method that allows us to run event listener callbacks
+	 * when we are asked to do so from the underlying java servlet.
+	 *
+	 */
 	package void function $runEvent( required string event, required array args ) {
 		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
 			_eventHandlers[ arguments.event ](

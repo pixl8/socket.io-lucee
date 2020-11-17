@@ -1,3 +1,11 @@
+/**
+ * Entrypoint object for the system.
+ *
+ * The server object controls the Socket.io server state
+ * as well as providing access to namespaces and, in turn,
+ * sockets that both provide socket communication.
+ *
+ */
 component {
 
 	variables._namespaces = {};

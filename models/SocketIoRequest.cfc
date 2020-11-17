@@ -7,11 +7,11 @@
  *
  */
 component accessors=true {
-	property name="cookies"     type="array";
-	property name="headers"     type="struct";
-	property name="uri"         type="string";
-	property name="queryString" type="string";
-	property name="remoteUser"  type="string";
+	property name="cookies"     type="array"  hint="Array of java Cookie objects representing the cookies that were sent with originating socket connect request";
+	property name="headers"     type="struct" hint="Struct of HTTP headers representing the headers that were sent with originating socket connect request";
+	property name="uri"         type="string" hint="URI of the original HTTP request made for this socket connection.";
+	property name="queryString" type="string" hint="Querystring of the original HTTP request made for this socket connection.";
+	property name="remoteUser"  type="string" hint="RemoteUser of the original HTTP request made for this socket connection.";
 
 	/**
 	 * Helper method to get the query string as a
