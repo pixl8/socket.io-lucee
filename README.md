@@ -22,8 +22,8 @@ We recommend you follow the [installation guide](https://pixl8.github.io/socket.
 io = new socketiolucee.models.SocketIoServer();
 
 // listen to default namespace connection events and send an event to any sockets that connect
-io.namespace( "/" ).on( "connect", function( socket ){
-	socket.send( "welcomeEvent", "Hello world from Lucee @ #Now()#" );
+io.on( "connect", function( socket ){
+	socket.send( "Hello world from Lucee @ #Now()#" );
 } );
 ```
 
@@ -42,8 +42,8 @@ io.namespace( "/" ).on( "connect", function( socket ){
 		// connect to our server
 		var socket = io( "127.0.0.1:3000/" );
 
-		// listen to the welcomeEvent and output the message
-		socket.on( 'welcomeEvent', function( message ){
+		// listen to the message event and output the message
+		socket.on( 'message', function( message ){
 			$( "#output" ).append( $( "<p>" + message + "</p>" ) );
 		} );
 	</script>
