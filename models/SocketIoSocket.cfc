@@ -34,11 +34,20 @@ component accessors=true {
 	 * @event.hint The name of the event to send.
 	 * @args.hint Array of arguments to send to any registered client listener functions for this event.
 	 */
-	public void function send(
+	public void function emit(
 		  required string event
 		,          array  args  = []
 	) {
 		ioserver.$send( argumentCollection=arguments, socketId=id );
+	}
+
+	/**
+	 * Sends a direct message event to the connected client with the provided string message.
+	 *
+	 * @message.hint The message to send.
+	 */
+	public void function send( required string message ) {
+		this.emit( event="message", args=[ arguments.message ] );
 	}
 
 	/**
