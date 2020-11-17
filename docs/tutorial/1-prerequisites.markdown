@@ -26,13 +26,13 @@ Next, add the two files below to the root of the directory:
 ```cfc
 component {
 
-	this.name = "socket.io-lucee tutorial";
+  this.name = "socket.io-lucee tutorial";
 
-	processingdirective preserveCase="true";
+  processingdirective preserveCase="true";
 
-	public void function onRequest( required string requestedTemplate ) output=true {
-		include template=arguments.requestedTemplate;
-	}
+  public void function onRequest( required string requestedTemplate ) output=true {
+    include template=arguments.requestedTemplate;
+  }
 
 }
 ```
@@ -43,11 +43,12 @@ component {
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Socket.io-Lucee: Tutorial</title>
-	<script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
+  <title>Socket.io-Lucee: Tutorial</title>
+  <script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 </head>
 <body>
 </body>
+</html>
 ```
 
 Finally, startup your Lucee application using the `box start` command in your terminal. 

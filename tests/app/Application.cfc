@@ -13,21 +13,21 @@ component {
 	}
 
 // private helpers
-	private void function setupListeners() {
-		var io = application.io;
+private void function setupListeners() {
+  var io = application.io;
 
-		io.on( "connect", function( socket ){
-			SystemOutput( "A user connected..." );
+  application.clientCount = 0;
 
-			socket.on( "disconnect", function() {
-			  	SystemOutput( "A user disconnected" );
-			});
+  io.on( "connect", function( socket ){
+    socket.send( "Hey, welcome to the namespace!" );
+    socket.broadcast( 'clientAlert', { description='#( ++application.clientCount )# clients connected!' });
 
-			socket.on( "clientEvent", function( msg ) {
-				SystemOutput( "Client event received: #msg#" )
-			} );
-	  } );
-	}
+    socket.on( "disconnect", function() {
+      socket.broadcast( 'clientAlert', { description='#( --application.clientCount )# clients connected!' });
+    });
+  } );
+}
+
 
 	private void function reloadCheck() {
 		// Setup our server and listeners if either`?fwreinit=true` is

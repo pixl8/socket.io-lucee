@@ -50,6 +50,7 @@ Then listen for the event on the client (`index.cfm`):
 </head>
 <body>
 </body>
+</html>
 ```
 
 Try it out in your browser. You will need to add `?fwreinit=true` in the URL for the first hit to have our Lucee application run through the changes.
@@ -96,6 +97,7 @@ private void function setupListeners() {
 </head>
 <body>
 </body>
+</html>
 ```
 
 Reload the application and try it out in your browser.
@@ -118,6 +120,7 @@ We can also use `socket.emit()` from the client side to send messages to the ser
 </head>
 <body>
 </body>
+</html>
 ```
 
 Use `socket.on()` to listen to the event from the server side:
