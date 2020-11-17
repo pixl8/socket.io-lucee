@@ -138,7 +138,7 @@ component {
 // UNDER-THE-HOOD LISTENER INTERFACE
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
-		var socket = ns.$registerSocket( socketId );
+		var socket = ns.$registerSocket( arguments.socketId );
 		var req    = new SocketIoRequest(
 			  cookies     = arguments.initialRequest.get( "cookies"     )
 			, headers     = arguments.initialRequest.get( "headers"     )
@@ -151,25 +151,25 @@ component {
 	}
 	public void function onDisconnecting( required string namespace, required string socketId ) {
 		var ns     = this.namespace( arguments.namespace );
-		var socket = ns.$getSocket( socketId );
+		var socket = ns.$getSocket( arguments.socketId );
 
 		ns.$runEvent( "disconnecting", [ socket ] );
 	}
 	public void function onDisconnect( required string namespace, required string socketId ) {
 		var ns     = this.namespace( arguments.namespace );
-		var socket = ns.$getSocket( socketId );
+		var socket = ns.$getSocket( arguments.socketId );
 
 		try {
 			ns.$runEvent( "disconnect", [ socket ] );
 		} catch( any e ) {
 			rethrow;
 		} finally {
-			ns.$deRegisterSocket( socketId );
+			ns.$deRegisterSocket( arguments.socketId );
 		}
 	}
 	public void function onSocketEvent( required string namespace, required string socketId, required string event, array args=[] ) {
 		var ns     = this.namespace( arguments.namespace );
-		var socket = ns.$getSocket( socketId );
+		var socket = ns.$getSocket( arguments.socketId );
 
 		socket.$runEvent( arguments.event, args );
 	}
