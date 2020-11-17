@@ -13,10 +13,10 @@ Packaged releases are available straight from the Github project. Head to the re
 
 [https://github.com/pixl8/socket.io-lucee/releases](https://github.com/pixl8/socket.io-lucee/releases)
 
-Unzip the package somewhere to your project and make a mapping to the root directory named whatever you like, for example: `/luceesocketio`. You can then get started with:
+Unzip the package somewhere to your project and make a mapping to the root directory named whatever you like, for example: `/socketiolucee`. You can then get started with:
 
 ```cfc
-io = new luceesocketio.models.SocketIoServer();
+io = new socketiolucee.models.SocketIoServer();
 ```
 
 ## Using Commandbox
@@ -27,7 +27,7 @@ We publish releases to [Forgebox](https://forgebox.io) and you can install them 
 box install socketiolucee
 ```
 
-This will create a `socket.io-lucee` directory at the root of the install. If you wish to install it somewhere else you can specify the installation directory with the `box install` command (see [CommandBox documentation](https://commandbox.ortusbooks.com/package-management/installing-packages) for details).
+This will create a `socketiolucee` directory at the root of the install. If you wish to install it somewhere else you can specify the installation directory with the `box install` command (see [CommandBox documentation](https://commandbox.ortusbooks.com/package-management/installing-packages) for details).
 
 ### For Coldbox
 
