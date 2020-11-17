@@ -146,15 +146,16 @@ component {
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$registerSocket( arguments.socketId );
-		var req    = new SocketIoRequest(
+
+		socket.setHttpRequest( new SocketIoRequest(
 			  cookies     = arguments.initialRequest.get( "cookies"     )
 			, headers     = arguments.initialRequest.get( "headers"     )
 			, uri         = arguments.initialRequest.get( "uri"         )
 			, queryString = arguments.initialRequest.get( "querystring" )
 			, remoteUser  = arguments.initialRequest.get( "remoteUser"  )
-		);
+		) );
 
-		ns.$runEvent( "connect", [ socket, req ] );
+		ns.$runEvent( "connect", [ socket ] );
 	}
 	public void function onDisconnecting( required string namespace, required string socketId ) {
 		var ns     = this.namespace( arguments.namespace );

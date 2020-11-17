@@ -1,8 +1,9 @@
 component accessors=true {
 
-	property name="id"        type="string";
-	property name="namespace" type="SocketIoNamespace";
-	property name="ioserver"  type="SocketIoServer";
+	property name="id"          type="string";
+	property name="namespace"   type="SocketIoNamespace";
+	property name="ioserver"    type="SocketIoServer";
+	property name="httpRequest" type="SocketIoRequest";
 
 	variables._eventHandlers = {};
 

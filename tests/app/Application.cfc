@@ -29,8 +29,8 @@ component {
 		var io = new socketiolucee.models.SocketIoServer();
 		var ns = io.sockets;
 
-		ns.on( "connect", function( socket, req ){
-			var params = req.getRequestParams();
+		ns.on( "connect", function( socket ){
+			var params = socket.getHttpRequest().getRequestParams();
 			var dummy = params.dummy ?: "";
 
 			if ( dummy == "password" ) {
