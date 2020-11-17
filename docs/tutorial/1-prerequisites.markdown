@@ -44,11 +44,9 @@ component {
 <html>
 <head>
 	<title>Socket.io-Lucee: Tutorial</title>
+	<script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 </head>
 <body>
-	<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-	<script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
-	<script>
 </body>
 ```
 
