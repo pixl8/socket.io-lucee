@@ -15,16 +15,10 @@ component {
 // private helpers
 private void function setupListeners() {
   var io = application.io;
+  var ns = io.of( "/admin" );
 
-  application.clientCount = 0;
-
-  io.on( "connect", function( socket ){
-    socket.send( "Hey, welcome to the namespace!" );
-    socket.broadcast( 'clientAlert', { description='#( ++application.clientCount )# clients connected!' });
-
-    socket.on( "disconnect", function() {
-      socket.broadcast( 'clientAlert', { description='#( --application.clientCount )# clients connected!' });
-    });
+  ns.on( "connect", function( socket ){
+    socket.send( "Welcome to the admin namespace...!" );
   } );
 }
 
