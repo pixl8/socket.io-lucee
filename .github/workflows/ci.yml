@@ -117,7 +117,7 @@ jobs:
 
       - name: Publish to forgebox
         if: "env.PUBLISH == 'true'"
-        uses: pixl8/github-action-box-publish@minibox-alpha2
+        uses: pixl8/github-action-box-publish@v3
         with:
           forgebox_user: ${{ secrets.FORGEBOX_USER }}
           forgebox_pass: ${{ secrets.FORGEBOX_PASS }}
