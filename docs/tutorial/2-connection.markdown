@@ -87,3 +87,4 @@ Update your HTML in `index.cfm` to the following listing:
 
 Refresh your browser a few times. Now check your CommandBox server console output to see the logs of connections and disconnections to the server.
 
+**Next:** [3. Event handling](3-eventhandling.html)
