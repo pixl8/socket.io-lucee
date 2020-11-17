@@ -552,10 +552,10 @@ rooms.</p>
 			<code>void</code>
 		</td>
 		<td>
-			<strong><a href="SocketIoSocket.html#emit()">emit</A></strong>()
+			<strong><a href="SocketIoSocket.html#emit()">emit</A></strong>(string event, [any args='[runtime expression]'])
 			<br>
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alias of 'broadcast'.
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends a direct event to the connected client.
 			
 		</td>
 	</tr>
@@ -679,10 +679,10 @@ rooms.</p>
 			<code>void</code>
 		</td>
 		<td>
-			<strong><a href="SocketIoSocket.html#send()">send</A></strong>(string event, [array args='[runtime expression]'])
+			<strong><a href="SocketIoSocket.html#send()">send</A></strong>(string message)
 			<br>
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends a direct event to the connected client.
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends a direct message event to the connected client with the provided string message.
 			
 		</td>
 	</tr>
@@ -1132,12 +1132,12 @@ same namespace and optional room(s) <strong>excluding this socket connection</st
 		
 	</h3>
 
-	<kbd>public void <strong>emit</strong>()</kbd>
+	<kbd>public void <strong>emit</strong>(string event, [any args='[runtime expression]'])</kbd>
 
 	<br><br>
 
 	
-		<p>Alias of 'broadcast'</p>
+		<p>Sends a direct event to the connected client.</p>
 	
 
 	
@@ -1150,6 +1150,15 @@ same namespace and optional room(s) <strong>excluding this socket connection</st
 	
 	
 
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code> - The name of the event to send.</dd>
+		
+		<dd><code>args</code> - Single argument, or array of arguments to send to any registered client listener functions for this event.</dd>
+		
+		</dl>
 	
 
 	
@@ -1453,12 +1462,12 @@ same namespace and optional room(s) <strong>excluding this socket connection</st
 		
 	</h3>
 
-	<kbd>public void <strong>send</strong>(string event, [array args='[runtime expression]'])</kbd>
+	<kbd>public void <strong>send</strong>(string message)</kbd>
 
 	<br><br>
 
 	
-		<p>Sends a direct event to the connected client.</p>
+		<p>Sends a direct message event to the connected client with the provided string message.</p>
 	
 
 	
@@ -1475,9 +1484,7 @@ same namespace and optional room(s) <strong>excluding this socket connection</st
 		<dl>
 		<dt><strong>Parameters:</strong></dt>
 		
-		<dd><code>event</code> - The name of the event to send.</dd>
-		
-		<dd><code>args</code> - Array of arguments to send to any registered client listener functions for this event.</dd>
+		<dd><code>message</code> - The message to send.</dd>
 		
 		</dl>
 	

@@ -372,7 +372,7 @@ sockets that both provide socket communication.</p>
 			<code>package&nbsp;void</code>
 		</td>
 		<td>
-			<strong><a href="SocketIoServer.html#$send()">$send</A></strong>(string socketId, string event, [array args='[runtime expression]'])
+			<strong><a href="SocketIoServer.html#$send()">$send</A></strong>(string socketId, string event, [any args='[runtime expression]'])
 			<br>
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Internal use for namespace and socket objects.
@@ -481,6 +481,21 @@ sockets that both provide socket communication.</p>
 			<br>
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get a Socket-io namespace object.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoServer.html#on()">on</A></strong>(string event, any callback)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Register an event listener with the default namespace (proxy to namespace.
 			
 		</td>
 	</tr>
@@ -960,7 +975,7 @@ to communicate with underlying Java framework.</p>
 		
 	</h3>
 
-	<kbd>package void <strong>$send</strong>(string socketId, string event, [array args='[runtime expression]'])</kbd>
+	<kbd>package void <strong>$send</strong>(string socketId, string event, [any args='[runtime expression]'])</kbd>
 
 	<br><br>
 
@@ -1253,6 +1268,49 @@ if it does not already exist.</p>
 		<dt><strong>Parameters:</strong></dt>
 		
 		<dd><code>namespace</code> - The name of the namespace</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="on()"><!-- --></a>
+	<h3>
+		on
+		
+	</h3>
+
+	<kbd>public void <strong>on</strong>(string event, any callback)</kbd>
+
+	<br><br>
+
+	
+		<p>Register an event listener with the default namespace (proxy to namespace.on()).</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code> - The name of the event to listen to, valid values are: connect, disconnect and disconnecting</dd>
+		
+		<dd><code>callback</code> - Closure function with which to handle the event. The function will be passed a socket object as its single argument.</dd>
 		
 		</dl>
 	

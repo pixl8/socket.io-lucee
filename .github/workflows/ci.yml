@@ -32,8 +32,8 @@ jobs:
           unzip socketio-lucee-1.0.0.jar && \
           echo "Manifest-Version: 1.0
           Bundle-ManifestVersion: 2
-          Bundle-Name: Lucee SocketIo Server Wrapper
-          Bundle-SymbolicName: com.pixl8.luceesocketio
+          Bundle-Name: SocketIO-Java Server Implementation with Lucee bindings
+          Bundle-SymbolicName: com.pixl8.socketio-lucee
           Bundle-Version: 1.0.0
           " > META-INF/MANIFEST.MF && \
           rm socketio-lucee-1.0.0.jar && \
@@ -78,7 +78,8 @@ jobs:
 
       - name: Zip project
         if: "env.PUBLISH == 'true'"
-        run: zip -rq $ZIP_FILE * -x .* -x \.git/* -x \.github/* -x \docs/* -x \java/* -x \tests/*
+
+        run: zip -rq $ZIP_FILE * --exclude=".*" --exclude="\.git/*" --exclude="\.github/*" --exclude="\docs/*" --exclude="\java/*" --exclude="\tests/*"
         shell: bash
         env:
           ZIP_FILE: ${{ steps.versiongen.outputs.semver_release_number }}.zip
