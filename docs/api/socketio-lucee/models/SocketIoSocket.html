@@ -1,0 +1,1653 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>SocketIoSocket</title>
+	<meta name="keywords" content="socketio-lucee.models.concurrent.Callable interface">
+	<!-- common assets -->
+	
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../highlighter/styles/shCoreDefault.css">
+	<script src="../../highlighter/scripts/shCore.js"></script>
+	<script src="../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>Socket.io-Lucee CFML API</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					
+					<li><a href="../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+				
+
+				
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+
+			  	
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-file"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../index.html?socketio-lucee/models/SocketIoSocket.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: socketio-lucee.models"><span class="label label-success">socketio-lucee.models</span></a>
+</div>
+
+<h2>
+
+
+Class
+
+ SocketIoSocket</h2>
+
+
+
+
+
+
+
+
+	
+		
+	
+	
+
+	
+		
+		
+			
+		
+	
+	
+
+
+<!-- Inheritance Tree-->
+<pre style="background:white">lucee.Component
+    <img src="../../resources/inherit.gif" alt="extended by ">socketio-lucee.models.SocketIoSocket
+</pre>
+
+
+
+	
+	
+
+
+
+
+
+
+
+<div id="class-hint">
+	<p>Represents a single socket connection.
+The socket object can be used to send direct
+messages, to join/leave rooms and to broadcast
+to other sockets within the namespace and optional
+rooms.</p>
+</div>
+
+
+<!-- Clas Attributes -->
+<div class="panel panel-info">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+		
+			
+		
+			
+		
+			
+		
+			
+			
+			<li class="label label-danger label-annotations">
+				synchronized
+				
+				: false
+				
+			</li>
+			&nbsp;
+			
+		
+			
+		
+			
+		
+			
+		
+			
+		
+			
+			
+			<li class="label label-danger label-annotations">
+				accessors
+				
+				: true
+				
+			</li>
+			&nbsp;
+			
+		
+			
+		
+			
+			
+			<li class="label label-danger label-annotations">
+				persistent
+				
+				: false
+				
+			</li>
+			&nbsp;
+			
+		
+			
+		
+			
+		
+		
+	</div>
+</div>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../socketio-lucee/models/SocketIoRequest.html" title="class in socketio-lucee.models">SocketIoRequest</a></code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#httpRequest()">httpRequest</A></strong>
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The original HTTP request that triggered the socket connection.
+			
+			<br><br>
+			<ul>
+			
+				
+			
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			
+				
+			
+				
+			
+				
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+			
+				
+			
+				
+			
+				
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#id()">id</A></strong>
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The ID of the socket, as provided by our underlying embedded java servlet.
+			
+			<br><br>
+			<ul>
+			
+				
+			
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			
+				
+			
+				
+			
+				
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+			
+				
+			
+				
+			
+				
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../socketio-lucee/models/SocketIoServer.html" title="class in socketio-lucee.models">SocketIoServer</a></code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#ioserver()">ioserver</A></strong>
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The SocketIoServer object in which the socket and namespace exist.
+			
+			<br><br>
+			<ul>
+			
+				
+			
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			
+				
+			
+				
+			
+				
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+			
+				
+			
+				
+			
+				
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../socketio-lucee/models/SocketIoNamespace.html" title="class in socketio-lucee.models">SocketIoNamespace</a></code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#namespace()">namespace</A></strong>
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The namespace to which the socket is connected.
+			
+			<br><br>
+			<ul>
+			
+				
+			
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			
+				
+			
+				
+			
+				
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+			
+				
+			
+				
+			
+				
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>package&nbsp;void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#$runEvent()">$runEvent</A></strong>(string event, array args)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Internal helper method that allows us to run event listener callbacks.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#broadcast()">broadcast</A></strong>(string event, [any args='[runtime expression]'], [any rooms='[runtime expression]'])
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Broadcasts an event to all connected clients to the.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#disconnect()">disconnect</A></strong>(boolean close)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Disconnects the connected client from the namespace.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#emit()">emit</A></strong>()
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alias of 'broadcast'.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#getHttpRequest()">getHttpRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#getId()">getId</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#getIoserver()">getIoserver</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#getNamespace()">getNamespace</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#joinRoom()">joinRoom</A></strong>(string roomName)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Registers the connected client to the given room name.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#leaveAllRooms()">leaveAllRooms</A></strong>()
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unregisters the connected client from all rooms.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#leaveRoom()">leaveRoom</A></strong>(string roomName)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unregisters the connected client from the given room name.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#on()">on</A></strong>(string event, any callback)
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Register an incoming event listener from the connected socket.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#send()">send</A></strong>(string event, [array args='[runtime expression]'])
+			<br>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends a direct event to the connected client.
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#setHttpRequest()">setHttpRequest</A></strong>(<a href="../../socketio-lucee/models/SocketIoRequest.html" title="class in socketio-lucee.models">SocketIoRequest</a> httpRequest)
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#setId()">setId</A></strong>(string id)
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#setIoserver()">setIoserver</A></strong>(<a href="../../socketio-lucee/models/SocketIoServer.html" title="class in socketio-lucee.models">SocketIoServer</a> ioserver)
+			<br>
+			
+		</td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SocketIoSocket.html#setNamespace()">setNamespace</A></strong>(<a href="../../socketio-lucee/models/SocketIoNamespace.html" title="class in socketio-lucee.models">SocketIoNamespace</a> namespace)
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	
+
+	
+
+	&nbsp;
+	<a name="methods_inherited_from_class_lucee.Component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>lucee.Component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+				
+				
+
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		
+		<a name="httpRequest()"><!-- --></a>
+		<h3>httpRequest</h3>
+
+		<kbd>
+			property <a href="../../socketio-lucee/models/SocketIoRequest.html" title="class in socketio-lucee.models">SocketIoRequest</a>
+			<strong>httpRequest</strong>
+			
+		</kbd>
+
+		<br><br>
+		
+			<p>The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			
+		
+			
+			<dd><code>access</code> - public</dd>
+			
+		
+			
+			<dd><code>required</code> - false</dd>
+			
+		
+			
+		
+			
+			<dd><code>returntype</code> - any</dd>
+			
+		
+			
+		
+			
+		
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		
+		</dl>
+
+		<hr>
+	
+		
+		<a name="id()"><!-- --></a>
+		<h3>id</h3>
+
+		<kbd>
+			property string
+			<strong>id</strong>
+			
+		</kbd>
+
+		<br><br>
+		
+			<p>The ID of the socket, as provided by our underlying embedded java servlet.</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			
+		
+			
+			<dd><code>access</code> - public</dd>
+			
+		
+			
+			<dd><code>required</code> - false</dd>
+			
+		
+			
+		
+			
+			<dd><code>returntype</code> - any</dd>
+			
+		
+			
+		
+			
+		
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		
+		</dl>
+
+		<hr>
+	
+		
+		<a name="ioserver()"><!-- --></a>
+		<h3>ioserver</h3>
+
+		<kbd>
+			property <a href="../../socketio-lucee/models/SocketIoServer.html" title="class in socketio-lucee.models">SocketIoServer</a>
+			<strong>ioserver</strong>
+			
+		</kbd>
+
+		<br><br>
+		
+			<p>The SocketIoServer object in which the socket and namespace exist.</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			
+		
+			
+			<dd><code>access</code> - public</dd>
+			
+		
+			
+			<dd><code>required</code> - false</dd>
+			
+		
+			
+		
+			
+			<dd><code>returntype</code> - any</dd>
+			
+		
+			
+		
+			
+		
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		
+		</dl>
+
+		<hr>
+	
+		
+		<a name="namespace()"><!-- --></a>
+		<h3>namespace</h3>
+
+		<kbd>
+			property <a href="../../socketio-lucee/models/SocketIoNamespace.html" title="class in socketio-lucee.models">SocketIoNamespace</a>
+			<strong>namespace</strong>
+			
+		</kbd>
+
+		<br><br>
+		
+			<p>The namespace to which the socket is connected.</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			
+		
+			
+			<dd><code>access</code> - public</dd>
+			
+		
+			
+			<dd><code>required</code> - false</dd>
+			
+		
+			
+		
+			
+			<dd><code>returntype</code> - any</dd>
+			
+		
+			
+		
+			
+		
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		
+		</dl>
+
+		<hr>
+	
+
+
+
+
+
+
+
+
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	
+	<a name="$runEvent()"><!-- --></a>
+	<h3>
+		$runEvent
+		
+	</h3>
+
+	<kbd>package void <strong>$runEvent</strong>(string event, array args)</kbd>
+
+	<br><br>
+
+	
+		<p>Internal helper method that allows us to run event listener callbacks
+when we are asked to do so from the underlying java servlet.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code></dd>
+		
+		<dd><code>args</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="broadcast()"><!-- --></a>
+	<h3>
+		broadcast
+		
+	</h3>
+
+	<kbd>public void <strong>broadcast</strong>(string event, [any args='[runtime expression]'], [any rooms='[runtime expression]'])</kbd>
+
+	<br><br>
+
+	
+		<p>Broadcasts an event to all connected clients to the
+same namespace and optional room(s) <strong>excluding this socket connection</strong>.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code> - The name of the event to broadcast.</dd>
+		
+		<dd><code>args</code> - Optional room name, or array of room names, to send the event to.</dd>
+		
+		<dd><code>rooms</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="disconnect()"><!-- --></a>
+	<h3>
+		disconnect
+		
+	</h3>
+
+	<kbd>public void <strong>disconnect</strong>(boolean close)</kbd>
+
+	<br><br>
+
+	
+		<p>Disconnects the connected client from the namespace.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>close</code> - If true, also closes the underlying socket connection.</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="emit()"><!-- --></a>
+	<h3>
+		emit
+		
+	</h3>
+
+	<kbd>public void <strong>emit</strong>()</kbd>
+
+	<br><br>
+
+	
+		<p>Alias of 'broadcast'</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="getHttpRequest()"><!-- --></a>
+	<h3>
+		getHttpRequest
+		
+	</h3>
+
+	<kbd>public string <strong>getHttpRequest</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="getId()"><!-- --></a>
+	<h3>
+		getId
+		
+	</h3>
+
+	<kbd>public string <strong>getId</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="getIoserver()"><!-- --></a>
+	<h3>
+		getIoserver
+		
+	</h3>
+
+	<kbd>public string <strong>getIoserver</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="getNamespace()"><!-- --></a>
+	<h3>
+		getNamespace
+		
+	</h3>
+
+	<kbd>public string <strong>getNamespace</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="joinRoom()"><!-- --></a>
+	<h3>
+		joinRoom
+		
+	</h3>
+
+	<kbd>public void <strong>joinRoom</strong>(string roomName)</kbd>
+
+	<br><br>
+
+	
+		<p>Registers the connected client to the given room name.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>roomName</code> - The name of the room</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="leaveAllRooms()"><!-- --></a>
+	<h3>
+		leaveAllRooms
+		
+	</h3>
+
+	<kbd>public void <strong>leaveAllRooms</strong>()</kbd>
+
+	<br><br>
+
+	
+		<p>Unregisters the connected client from all rooms.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="leaveRoom()"><!-- --></a>
+	<h3>
+		leaveRoom
+		
+	</h3>
+
+	<kbd>public void <strong>leaveRoom</strong>(string roomName)</kbd>
+
+	<br><br>
+
+	
+		<p>Unregisters the connected client from the given room name.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>roomName</code> - The name of the room</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="on()"><!-- --></a>
+	<h3>
+		on
+		
+	</h3>
+
+	<kbd>public void <strong>on</strong>(string event, any callback)</kbd>
+
+	<br><br>
+
+	
+		<p>Register an incoming event listener from the connected socket.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code> - The name of the event to listen to.</dd>
+		
+		<dd><code>callback</code> - Closure UDF with logic to process the event. Receives positional arguments that were sent by the client.</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="send()"><!-- --></a>
+	<h3>
+		send
+		
+	</h3>
+
+	<kbd>public void <strong>send</strong>(string event, [array args='[runtime expression]'])</kbd>
+
+	<br><br>
+
+	
+		<p>Sends a direct event to the connected client.</p>
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>event</code> - The name of the event to send.</dd>
+		
+		<dd><code>args</code> - Array of arguments to send to any registered client listener functions for this event.</dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="setHttpRequest()"><!-- --></a>
+	<h3>
+		setHttpRequest
+		
+	</h3>
+
+	<kbd>public any <strong>setHttpRequest</strong>(<a href="../../socketio-lucee/models/SocketIoRequest.html" title="class in socketio-lucee.models">SocketIoRequest</a> httpRequest)</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>httpRequest</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="setId()"><!-- --></a>
+	<h3>
+		setId
+		
+	</h3>
+
+	<kbd>public any <strong>setId</strong>(string id)</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>id</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="setIoserver()"><!-- --></a>
+	<h3>
+		setIoserver
+		
+	</h3>
+
+	<kbd>public any <strong>setIoserver</strong>(<a href="../../socketio-lucee/models/SocketIoServer.html" title="class in socketio-lucee.models">SocketIoServer</a> ioserver)</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>ioserver</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+	
+	<a name="setNamespace()"><!-- --></a>
+	<h3>
+		setNamespace
+		
+	</h3>
+
+	<kbd>public any <strong>setNamespace</strong>(<a href="../../socketio-lucee/models/SocketIoNamespace.html" title="class in socketio-lucee.models">SocketIoNamespace</a> namespace)</kbd>
+
+	<br><br>
+
+	
+
+	
+
+	
+		
+		
+	
+
+	
+	
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>namespace</code></dd>
+		
+		</dl>
+	
+
+	
+
+	
+
+	</dl>
+	<hr>
+
+
+
+
+</body>
+</html>
+
