@@ -1,9 +1,11 @@
-Socket.io-lucee - Lucee Server Implementation of Socket.IO protocol
-===================================================================
+Socket.io-lucee - Socket.IO protocol for Lucee
+==============================================
+
+![Continuous Integration](https://github.com/pixl8/socket.io-lucee/workflows/Continuous%20Integration/badge.svg)
 
 **Socket.io-Lucee** is a [Socket.IO](https://socket.io/) server implementation for the [Lucee webserver](https://www.lucee.org). Socket.IO is a javascript library for realtime web applications. You can use the **Socket.io-lucee** project to marry your Lucee server with your frontend client(s) using the Socket.IO client library.
 
-**The project is currently in an ALPHA state. This means it is suitable for experimenting with, but unlikely that it is ready for production use. We have implemented much of the core feature set, but there is much to do to ensure that we have a robust, performant and feature complete set.**
+*The project is currently in an ALPHA state. This means it is suitable for experimenting with, but unlikely that it is ready for production use. We have implemented much of the core feature set, but there is much to do to ensure that we have a robust, performant and feature complete set.*
 
 ## A note on Socket.IO version compatibility
 
