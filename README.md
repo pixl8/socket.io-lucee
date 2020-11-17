@@ -5,6 +5,10 @@ Socket.io - Lucee Server Implementation
 
 This is a SocketIO server implementation for the [Lucee webserver](https://www.lucee.org).
 
+## Documentation
+
+Full documentation and tutorials can be found here: [https://pixl8.github.io/socket.io-lucee/](https://pixl8.github.io/socket.io-lucee/)
+
 ## License
 
 This project is licensed under the GPLv2 License - see the [LICENSE.txt](https://github.com/pixl8/luceesocketio/blob/stable/LICENSE.txt) file for details.
