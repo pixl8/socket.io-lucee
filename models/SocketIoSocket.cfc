@@ -20,11 +20,17 @@ component accessors=true extends="base.EventEmitter" {
 
 	public void function broadcast(
 		  required string event
-		,          array  args  = []
-		,          array  rooms = []
+		,          any    args  = []
+		,          any    rooms = []
 	) {
 		ioserver.$broadcast( argumentCollection=arguments, socketId=id );
 	}
+
+	/**
+	 * Alias of 'broadcast'
+	 *
+	 */
+	public void function emit() { broadcast( argumentCollection=arguments ); }
 
 	public void function joinRoom( required string roomName ) {
 		ioserver.$joinRoom( argumentCollection=arguments, socketId=id );

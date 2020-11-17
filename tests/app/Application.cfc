@@ -36,7 +36,7 @@ component {
 			if ( dummy == "password" ) {
 				socket.send( "welcome", [ "Welcome to chat! This is just for you: #socket.getId()#" ] );
 				socket.joinRoom( "secure" );
-				socket.broadcast( "newmember", [ "Someone has joined the chat...#socket.getId()#" ], [ "secure" ] );
+				socket.broadcast( "newmember", "Someone has joined the chat...#socket.getId()#", "secure" );
 				socket.on( "clientEvent", function( message="nope" ) {
 					socket.broadcast( "echo", [ arguments.message ], [ "secure" ] );
 				} );

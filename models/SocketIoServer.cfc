@@ -70,11 +70,18 @@ component {
 // PACKAGE METHODS FOR INTERNAL USE
 	package void function $broadcast(
 		  required string event
-		,          array  args  = []
-		,          array  rooms = []
+		,          any    args  = []
+		,          any    rooms = []
 		,          string namespace = ""
 		,          string socketId  = ""
 	) {
+		if ( !IsArray( arguments.args ) ) {
+			arguments.args = [ arguments.args ];
+		}
+		if ( !IsArray( arguments.rooms ) ) {
+			arguments.rooms = [ arguments.rooms ];
+		}
+
 		if ( Len( arguments.namespace ) ) {
 			_getJavaServer().namespaceBroadcast(
 				  arguments.namespace

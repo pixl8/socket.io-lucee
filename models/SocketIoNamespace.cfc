@@ -8,11 +8,17 @@ component accessors=true extends="base.EventEmitter" {
 // PUBLIC API
 	public void function broadcast(
 		  required string event
-		,          array  args  = []
-		,          array  rooms = []
+		,          any    args  = []
+		,          any    rooms = []
 	) {
 		ioserver.$broadcast( argumentCollection=arguments, namespace=name );
 	}
+
+	/**
+	 * Alias of 'broadcast'
+	 *
+	 */
+	public void function emit() { broadcast( argumentCollection=arguments ); }
 
 // PROTECTED INTERNAL METHODS
 	package SocketIoSocket function $registerSocket( required string socketId ) {
