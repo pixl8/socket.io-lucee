@@ -13,13 +13,20 @@ component {
 	this.sockets = new SocketIoNamespace(); // this will be alias for root namespace
 
 // CONSTRUCTOR
+	/**
+	 * Initialize the SocketIO Server.
+	 *
+	 * @host.hint Hostname on which the server listens, e.g. 127.0.0.1
+	 * @port.hint The port on which the server listens
+	 * @start.hint Whether or not to immediately start the server
+	 */
 	public any function init(
 		  string  host  = ListFirst( cgi.http_host, ":" )
 		, string  port  = 3000
 		, boolean start = true
 	) {
-		_setHost( arguments.host );
-		_setPort( arguments.port );
+		variables._host = arguments.host;
+		variables._port = arguments.port;
 
 		if ( arguments.start ) {
 			this.start();
@@ -31,10 +38,10 @@ component {
 // PUBLIC API
 
 	/**
-	 * This is what socket.io server named their method
-	 * for getting a namespace. I'm sure it make sense so
-	 * am keeping it here for those that want to use it.
-	 * Just an alias of 'namespace'.
+	 * Get a Socket-io namespace object. The namespace will be registered
+	 * if it does not already exist.
+	 *
+	 * @namespace.hint The name of the namespace
 	 *
 	 */
 	public SocketIoNamespace function of( required string namespace ) {
@@ -42,8 +49,7 @@ component {
 	}
 
 	/**
-	 * Retrieve a Socket.io namespace object. This will be used to emit and
-	 * receive messages.
+	 * Slightly less weirdly named alias of the 'of' method!
 	 *
 	 */
 	public SocketIoNamespace function namespace( required string namespace ) {
@@ -62,20 +68,37 @@ component {
 	}
 
 // START/STOP SERVER
+	/**
+	 * Starts the server, if it has not already started.
+	 *
+	 */
 	public void function start() {
 		_getJavaServer().startServer();
 	}
 
+	/**
+	 * Stops the server, should it be running.
+	 *
+	 */
 	public void function stop() {
 		if ( _serverIsRegistered() ) {
 			_getJavaServer().stopServer();
 		}
 	}
-	// aliases
+	/**
+	 * Alias of Stop()
+	 */
 	public void function close() { this.stop(); }
+	/**
+	 * Alias of Stop()
+	 */
 	public void function shutdown() { this.stop(); }
 
 // PACKAGE METHODS FOR INTERNAL USE
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $broadcast(
 		  required string event
 		,          any    args  = []
@@ -117,6 +140,10 @@ component {
 
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $send(
 		  required string socketId
 		, required string event
@@ -129,28 +156,52 @@ component {
 		);
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $joinRoom( required string socketId, required string roomName ) {
 		_getJavaServer().socketJoinRoom( arguments.socketId, arguments.roomName );
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $leaveRoom( required string socketId, required string roomName ) {
 		_getJavaServer().socketLeaveRoom( arguments.socketId, arguments.roomName );
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $leaveAllRooms( required string socketId ) {
 		_getJavaServer().socketLeaveAllRooms( arguments.socketId );
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $registerOn( required string namespace, required string socketId, required string event ) {
 		_getJavaServer().socketOn( arguments.namespace, arguments.socketId, arguments.event );
 	}
 
+	/**
+	 * Internal use for namespace and socket objects
+	 * to communicate with underlying Java framework.
+	 */
 	package void function $disconnect( required string socketId, required boolean close ) {
 		_getJavaServer().socketDisconnect( arguments.socketId, arguments.close );
 	}
 
 
 // UNDER-THE-HOOD LISTENER INTERFACE
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer.
+	 */
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$registerSocket( arguments.socketId );
@@ -165,12 +216,22 @@ component {
 
 		ns.$runEvent( "connect", [ socket ] );
 	}
+
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer.
+	 */
 	public void function onDisconnecting( required string namespace, required string socketId ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$getSocket( arguments.socketId );
 
 		ns.$runEvent( "disconnecting", [ socket ] );
 	}
+
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer.
+	 */
 	public void function onDisconnect( required string namespace, required string socketId ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$getSocket( arguments.socketId );
@@ -183,6 +244,11 @@ component {
 			ns.$deRegisterSocket( arguments.socketId );
 		}
 	}
+
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer.
+	 */
 	public void function onSocketEvent( required string namespace, required string socketId, required string event, array args=[] ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$getSocket( arguments.socketId );
@@ -191,6 +257,11 @@ component {
 	}
 
 // PRIVATE HELPERS
+	/**
+	 * Private access helper to retrieve our underlying
+	 * java server API, instantiating it if it does not
+	 * already exist.
+	 */
 	private any function _getJavaServer() {
 		if ( !_serverIsRegistered() ) {
 			_registerBundle();
@@ -199,20 +270,29 @@ component {
 				  this                                     // handlerCfc
 				, ExpandPath( "/" )                        // contextRoot
 				, getPageContext().getApplicationContext() // appContext
-				, _getHost()                               // host
-				, _getPort()                               // port
+				, variables._host                          // host
+				, variables._port                          // port
 			);
 
+			// handy public alias for the default namespace
 			this.sockets = of( "/" );
 		}
 
 		return variables._javaServer;
 	}
 
+	/**
+	 * Private helper to determine whether or not we have initiated our
+	 * internal Java API.
+	 */
 	private boolean function _serverIsRegistered() {
 		return StructKeyExists( variables, "_javaServer" );
 	}
 
+	/**
+	 * Private helper to register OSGi bundle with Lucee
+	 * for painfree class loading.
+	 */
 	private void function _registerBundle() {
 		var cfmlEngine = CreateObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
 		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
@@ -222,6 +302,10 @@ component {
 		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
 	}
 
+	/**
+	 * Private helper to help with cross language
+	 * communication of callback arguments.
+	 */
 	private array function _prepareArgs( required array args ) {
 		var javaServer = _getJavaServer();
 
@@ -232,21 +316,6 @@ component {
 		}
 
 		return arguments.args;
-	}
-
-// GETTERS AND SETTERS
-	private string function _getHost() {
-	    return _host;
-	}
-	private void function _setHost( required string host ) {
-	    _host = arguments.host;
-	}
-
-	private numeric function _getPort() {
-	    return _port;
-	}
-	private void function _setPort( required numeric port ) {
-	    _port = arguments.port;
 	}
 
 }
