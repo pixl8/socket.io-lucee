@@ -2,7 +2,7 @@
 	reporter = url.reporter ?: "simple";
 	testbox = new testbox.system.TestBox( options={}, reporter=reporter, directory={
 		  recurse  = true
-		, mapping  = "unit"
+		, mapping  = "integration"
 		, filter   = function( required path ){ return true; }
 	} );
 
