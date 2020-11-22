@@ -58,7 +58,7 @@ jobs:
           test_dir: /tests
           test_server_json: /tests/server-tests.json
           output_file: /tests/test-results.txt
-          verbose: false
+          verbose: true
 
       - name: Upload test results
         uses: actions/upload-artifact@v1
