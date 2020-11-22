@@ -47,6 +47,10 @@ jobs:
           verbose: true
           force: true
 
+      - name: Install test node modules
+        run: cd tests/resources/js && npm install
+        shell: bash
+
       - name: Run tests
         uses: ./.github/actions/test
         with:
