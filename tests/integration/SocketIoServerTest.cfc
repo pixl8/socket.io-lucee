@@ -148,7 +148,11 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	private string function _execJs( required string jsPath ) {
-		return tests.utils.JsRunner::executeScript( arguments.jsPath, port )
+		try {
+			return tests.utils.JsRunner::executeScript( arguments.jsPath, port )
+		} catch( any e ) {
+			fail( e.message & ". " & ( e.detail ?: "" ) );
+		}
 	}
 
 }
