@@ -2,16 +2,18 @@ component extends="testbox.system.BaseSpec"{
 
 	variables.port = 3000;
 
-
-
-
 	function run(){
 		describe( "socket.io-lucee server", function(){
 			aroundEach( function( spec, suite ){
-				variables.ioServer = new socketiolucee.models.SocketIoServer(
+				var ioServerArgs = {
 					  host  = "127.0.0.1"
 					, port  = port
 					, start = true
+				};
+				StructAppend( ioServerArgs, spec.data );
+
+				variables.ioServer = new socketiolucee.models.SocketIoServer(
+					argumentCollection = ioServerArgs
 				);
 
 				try {
@@ -124,6 +126,55 @@ component extends="testbox.system.BaseSpec"{
 				var result = _execJs( "/tests/resources/js/test_broadcast_to_all_clients_except_one.js" );
 				expect( Trim( result ) ).toBe( "success" );
 			} );
+
+			it( "should respond to initial http request default with ping interval and ping timeout", function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10;
+
+				var response = DeserializeJson( ReReplace( httpResult.fileContent, "^[0-9]+:[0-9]+", "" ) );
+
+				expect( response.pingInterval ).toBe( 5000 );
+				expect( response.pingTimeout ).toBe( 25000 );
+			} );
+
+			it( title="should respond to initial http request with custom configured ping interval and ping timeout", body=function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10 {
+					httpparam name="Origin" type="header" value="localhost";
+				}
+				var response = DeserializeJson( ReReplace( httpResult.fileContent, "^[0-9]+:[0-9]+", "" ) );
+
+				expect( response.pingInterval ).toBe( 10000 );
+				expect( response.pingTimeout ).toBe( 2000 );
+			}, data={ pingInterval=10000, pingTimeout=2000 } );
+
+			it( "should respond to initial http request with no CORS headers by default", function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10 {
+					httpparam name="Origin" type="header" value="localhost";
+				}
+				expect( StructKeyExists( httpResult.responseheader, "Access-Control-Allow-Origin" ) ).toBeFalse();
+			} );
+
+
+			it( title="should respond to initial http request with CORS headers when cors handling is enabled", body=function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10 {
+					httpparam name="Origin" type="header" value="localhost";
+				}
+				expect( httpResult.responseheader[ "Access-Control-Allow-Origin" ] ?: "" ).toBe( "localhost" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Methods" ] ?: "" ).toBe( "GET,HEAD,PUT,PATCH,POST,DELETE" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Credentials" ] ?: "" ).toBe( "true" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Headers" ] ?: "" ).toBe( "origin, content-type, accept" );
+			}, data={ enableCorsHandling=true } );
+
+			it( title="should not respond to initial http request with CORS headers when cors handling is enabled but the origin is not one of specifically configured origins", body=function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10 {
+					httpparam name="Origin" type="header" value="localhost";
+				}
+				expect( StructKeyExists( httpResult.responseheader, "Access-Control-Allow-Origin" ) ).toBeFalse();
+			}, data={ enableCorsHandling=true, allowedCorsOrigins=[ "127.0.0.1" ] } );
 
 			// it( "should send back an ack to client when asked for", function(){
 			// 	fail( "but not yet implemented" );
