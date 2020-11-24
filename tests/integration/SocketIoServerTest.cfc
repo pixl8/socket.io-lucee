@@ -218,9 +218,16 @@ component extends="testbox.system.BaseSpec"{
 				expect( result.arg ).toBe( "baz" );
 			} );
 
-			// it( "should send back an ack to client when asked for", function(){
-			// 	fail( "but not yet implemented" );
-			// } );
+			it( "should send back an ack to client when asked for", function(){
+				variables.ioServer.on( "connect", function( socket ){
+					socket.on( "foo", function( arg1, arg2, callback ){
+						callback( "baz" );
+					} );
+				} );
+
+				var result =_execJs( "/tests/resources/js/test_message_to_server_nonbinary_ack" );
+				expect( Trim( result ) ).toBe( "baz" );
+			} );
 
 
 			// it( "should allow client connections to dynamic namespaces", function(){
