@@ -39,6 +39,10 @@ component {
 					ArrayDelete( users, userMaps[ socket.getId() ] );
 				}
 			} );
+
+			socket.emit( "test", "test", function( arg="" ){
+				SystemOutput( "Received ack: #arg#" );
+			})
 		} );
 	}
 
@@ -54,7 +58,9 @@ component {
 
 	private void function initServer() {
 		// create and start the server on default port, 3000
-		application.io = new socketiolucee.models.SocketIoServer();
+		application.io = new socketiolucee.models.SocketIoServer(
+			enableCorsHandling = true
+		);
 	}
 
 	private void function shutdownServer() {

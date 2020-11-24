@@ -1,6 +1,7 @@
 package com.pixl8.socketiolucee;
 
 import io.socket.socketio.server.*;
+import io.socket.socketio.server.SocketIoSocket.ReceivedByRemoteAcknowledgementCallback;
 import io.socket.engineio.server.EngineIoServer;
 import io.socket.engineio.server.EngineIoServerOptions;
 import io.socket.engineio.server.JettyWebSocketHandler;
@@ -170,11 +171,27 @@ public class SocketIoServerWrapper {
 		}
 	}
 
-	public void socketSend( String socketId, String event, Object... args ) {
+	public void socketSend( String namespace, String socketId, String event, Object... args ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
 			socket.send( event, args );
+		}
+	}
+
+	public void socketSend( String namespace, String socketId, String event, Object[] args, String ackId ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.send( event, args, new SocketIoSocket.ReceivedByRemoteAcknowledgementCallback() {
+				@Override
+				public void onReceivedByRemote(Object... ackArgs) {
+					Object[] arrayArgs = ackArgs;
+					Object[] luceeArgs = { namespace, socketId, ackId, arrayArgs };
+
+					_luceeCall( "onAckCallback", luceeArgs );
+				}
+			} );
 		}
 	}
 

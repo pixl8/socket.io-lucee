@@ -14,6 +14,7 @@ component accessors=true {
 	property name="httpRequest" type="SocketIoRequest"   hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
 
 	variables._eventHandlers = {};
+	variables._ackCallbacks = {};
 
 // PUBLIC API
 	/**
@@ -31,14 +32,25 @@ component accessors=true {
 	/**
 	 * Sends a direct event to the connected client.
 	 *
-	 * @event.hint The name of the event to send.
-	 * @args.hint  Single argument, or array of arguments to send to any registered client listener functions for this event.
+	 * @event.hint       The name of the event to send.
+	 * @args.hint        Single argument, or array of arguments to send to any registered client listener functions for this event.
+	 * @ackCallback.hint Closure function that will receive ack confirmation of message receipt
 	 */
 	public void function emit(
 		  required string event
 		,          any    args = []
+		,          any    ackCallback
 	) {
-		ioserver.$send( argumentCollection=arguments, socketId=id );
+		if ( StructKeyExists( arguments, "ackCallback" ) ) {
+			var ackId = CreateUUId();
+			variables._ackCallbacks[ ackId ] = arguments.ackCallback;
+		}
+		ioserver.$send(
+			  argumentCollection = arguments
+			, namespace          = namespace.getName()
+			, socketId           = id
+			, ackId              = ackId ?: ""
+		);
 	}
 
 	/**
@@ -48,9 +60,10 @@ component accessors=true {
 	 */
 	public void function send( required string message ) {
 		ioserver.$send(
-			  event    = "message"
-			, args     = [ arguments.message ]
-		 	, socketId = id
+			  event     = "message"
+			, args      = [ arguments.message ]
+		 	, socketId  = id
+		 	, namespace = namespace.getName()
 		 );
 	}
 
@@ -121,6 +134,21 @@ component accessors=true {
 			_eventHandlers[ arguments.event ](
 				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
 			);
+		}
+	}
+
+	/**
+	 * Internal helper method that allows us to run ack callbacks
+	 * when we are asked to do so from the underlying java servlet.
+	 *
+	 */
+	package void function $runAckCallback( required string ackId, required array args ) {
+		if ( StructKeyExists( variables._ackCallbacks, arguments.ackId ) ) {
+			variables._ackCallbacks[ arguments.ackId ](
+				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
+			);
+
+			StructDelete( variables._ackCallbacks, arguments.ackId );
 		}
 	}
 

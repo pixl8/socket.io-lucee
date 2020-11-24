@@ -201,13 +201,27 @@ component extends="testbox.system.BaseSpec"{
 				expect( httpResult.responseheader[ "Access-Control-Allow-Headers" ] ?: "" ).toBe( "origin, content-type, accept" );
 			}, data={ enableCorsHandling=true, allowedCorsOrigins=[ "127.0.0.1", "localhost" ] } );
 
+			it( "should receive and process ack responses from clients receiving messages", function(){
+				var result = { arg="not received" };
+
+				variables.ioServer.on( "connect", function( socket ){
+
+					thread socket=arguments.socket name=CreateUUId() result=result {
+						sleep( 100 );
+						attributes.socket.emit( "foo", "bar", function( arg="something else" ){
+							result.arg = arguments.arg;
+						} );
+					}
+				} );
+
+				_execJs( "/tests/resources/js/test_message_to_client_nonbinary_ack.js" );
+				expect( result.arg ).toBe( "baz" );
+			} );
+
 			// it( "should send back an ack to client when asked for", function(){
 			// 	fail( "but not yet implemented" );
 			// } );
 
-			// it( "should receive and process ack responses from clients receiving messages", function(){
-			// 	fail( "but not yet implemented" );
-			// } );
 
 			// it( "should allow client connections to dynamic namespaces", function(){
 			// 	fail( "but we don't currently support dynamic namespace names in our server." );

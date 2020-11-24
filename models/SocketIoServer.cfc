@@ -180,17 +180,31 @@ component {
 	 */
 	package void function $send(
 		  required string socketId
+		, required string namespace
 		, required string event
-		,          any    args = []
+		,          any    args  = []
+		,          string ackId = ""
 	) {
 		if ( !IsArray( arguments.args ) ) {
 			arguments.args = [ arguments.args ];
 		}
-		_getJavaServer().socketSend(
-			  arguments.socketId
-			, arguments.event
-			, _prepareArgs( args )
-		);
+
+		if ( Len( arguments.ackId ) ) {
+			_getJavaServer().socketSend(
+				  arguments.namespace
+				, arguments.socketId
+				, arguments.event
+				, _prepareArgs( args )
+				, arguments.ackId
+			);
+		} else {
+			_getJavaServer().socketSend(
+				  arguments.namespace
+				, arguments.socketId
+				, arguments.event
+				, _prepareArgs( args )
+			);
+		}
 	}
 
 	/**
@@ -291,6 +305,23 @@ component {
 		var socket = ns.$getSocket( arguments.socketId );
 
 		socket.$runEvent( arguments.event, args );
+	}
+
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer
+	 *
+	 */
+	public void function onAckCallback(
+		  required string namespace
+		, required string socketId
+		, required string ackId
+		, required array  args
+	) {
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$getSocket( arguments.socketId );
+
+		socket.$runAckCallback( arguments.ackId, arguments.args );
 	}
 
 // PRIVATE HELPERS
