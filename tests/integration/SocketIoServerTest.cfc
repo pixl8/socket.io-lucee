@@ -92,19 +92,33 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 			it( "should allow broadcasting to multiple rooms in a namespace", function(){
+				var broadcasted = false;
+				var joinedCount = 0;
+
 				variables.ioServer.on( "connect", function( socket ){
 					socket.on( "join_foo", function(){
+						joinedCount++;
 						socket.joinRoom( "foo" );
+						if ( joinedCount>=2 && !broadcasted ) {
+							broadcasted = true;
+							thread ioserver=ioserver name=CreateUUId() {
+								sleep( 500 );
+								attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
+							}
+						}
 					} );
 					socket.on( "join_bar", function(){
+						joinedCount++;
 						socket.joinRoom( "bar" );
+						if ( joinedCount>=2 && !broadcasted ) {
+							broadcasted = true;
+							thread ioserver=ioserver name=CreateUUId() {
+								sleep( 500 );
+								attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
+							}
+						}
 					} );
 				} );
-
-				thread ioserver=ioserver name=CreateUUId() {
-					sleep( 500 );
-					attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
-				}
 
 				var result = _execJs( "/tests/resources/js/test_broadcast_to_multiple_rooms.js" );
 				expect( Trim( result ) ).toBe( "success" );
@@ -175,6 +189,17 @@ component extends="testbox.system.BaseSpec"{
 				}
 				expect( StructKeyExists( httpResult.responseheader, "Access-Control-Allow-Origin" ) ).toBeFalse();
 			}, data={ enableCorsHandling=true, allowedCorsOrigins=[ "127.0.0.1" ] } );
+
+			it( title="should respond to initial http request with CORS headers when cors handling is enabled and the supplied origin matches the specifically configured origins", body=function(){
+				var httpResult = "";
+				http url="http://127.0.0.1:3000/socket.io/?transport=polling" result="httpResult" timeout=10 {
+					httpparam name="Origin" type="header" value="localhost";
+				}
+				expect( httpResult.responseheader[ "Access-Control-Allow-Origin" ] ?: "" ).toBe( "localhost" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Methods" ] ?: "" ).toBe( "GET,HEAD,PUT,PATCH,POST,DELETE" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Credentials" ] ?: "" ).toBe( "true" );
+				expect( httpResult.responseheader[ "Access-Control-Allow-Headers" ] ?: "" ).toBe( "origin, content-type, accept" );
+			}, data={ enableCorsHandling=true, allowedCorsOrigins=[ "127.0.0.1", "localhost" ] } );
 
 			// it( "should send back an ack to client when asked for", function(){
 			// 	fail( "but not yet implemented" );
