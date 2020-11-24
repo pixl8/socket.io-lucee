@@ -81,4 +81,4 @@ private void function setupListeners() {
 **Challenge:** write your own front-end listeners for the events above. Hint: you may want to add some UI to your page to trigger events.
 
 
-**Next:** [7. Chat application](7-chatapp.html)
+**Next:** [7. Ack callbacks](7-acks.html)
