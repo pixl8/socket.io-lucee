@@ -1,11 +1,11 @@
 ---
 layout: page
-title: 7. Chat application
-nav_order: 7
+title: 8. Chat application
+nav_order: 8
 parent: Tutorial
 ---
 
-# 7. A demo chat application
+# 8. A demo chat application
 
 The following is a listing for a super simple chat application. Update your code with the following and have a play! Note, the source code for this application has been taken and adapted from here: [https://www.tutorialspoint.com/socket.io/socket.io_chat_application.htm](https://www.tutorialspoint.com/socket.io/socket.io_chat_application.htm) (well worth going through their tutorial to get another angle).
 
@@ -116,7 +116,7 @@ component {
 
   private void function initServer() {
     // create and start the server on default port, 3000
-    application.io = new socketiolucee.models.SocketIoServer();
+    application.io = new socketiolucee.models.SocketIoServer( enableCorsHandling=true );
   }
 
   private void function shutdownServer() {

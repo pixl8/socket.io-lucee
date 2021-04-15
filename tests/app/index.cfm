@@ -30,6 +30,10 @@
            data.user + '</b>: ' + data.message + '</div>'
        }
       })
+      socket.on( "test", function( blah, callback ) {
+        console.log( blah );
+        callback( "hello back!" );
+      } );
      </script>
    </head>
 

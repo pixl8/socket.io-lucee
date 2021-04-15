@@ -47,14 +47,18 @@ jobs:
           verbose: true
           force: true
 
+      - name: Install test node modules
+        run: cd tests/resources/js && npm install
+        shell: bash
+
       - name: Run tests
-        uses: pixl8/github-action-box-test@v3
+        uses: ./.github/actions/test
         with:
           boxjson_dir: /tests
           test_dir: /tests
           test_server_json: /tests/server-tests.json
           output_file: /tests/test-results.txt
-          verbose: false
+          verbose: true
 
       - name: Upload test results
         uses: actions/upload-artifact@v1

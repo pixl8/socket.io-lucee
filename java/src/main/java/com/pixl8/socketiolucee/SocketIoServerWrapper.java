@@ -1,7 +1,9 @@
 package com.pixl8.socketiolucee;
 
 import io.socket.socketio.server.*;
+import io.socket.socketio.server.SocketIoSocket.ReceivedByRemoteAcknowledgementCallback;
 import io.socket.engineio.server.EngineIoServer;
+import io.socket.engineio.server.EngineIoServerOptions;
 import io.socket.engineio.server.JettyWebSocketHandler;
 import io.socket.emitter.Emitter;
 import org.eclipse.jetty.http.pathmap.ServletPathSpec;
@@ -36,11 +38,23 @@ public class SocketIoServerWrapper {
 		Log.setLog(new JettyNoLogging());
 	}
 
-	public SocketIoServerWrapper( Component handlerCfc, String contextRoot, ApplicationContext appContext, String host, int port ) throws PageException, ServletException {
+	public SocketIoServerWrapper(
+		  Component          handlerCfc
+		, String             contextRoot
+		, ApplicationContext appContext
+		, String             host
+		, int                port
+		, boolean            corsHandlingDisabled
+		, long               pingInterval
+		, long               pingTimeout
+		, int                maxTimeoutThreadPoolSize
+		, String[]           allowedCorsOrigins
+	) throws PageException, ServletException {
+
 		mCfcHandler     = new LuceeCfcProxy( handlerCfc, contextRoot, appContext, host );
 		mAddress        = new InetSocketAddress( host, port );
 		mServer         = new Server( mAddress );
-		mEngineIoServer = new EngineIoServer();
+		mEngineIoServer = new EngineIoServer( _setupEngineIoOptions( corsHandlingDisabled, pingInterval, pingTimeout, maxTimeoutThreadPoolSize, allowedCorsOrigins ) );
 		mSocketIoServer = new SocketIoServer( mEngineIoServer );
 
 		mSockets = Collections.synchronizedMap( new HashMap<String, SocketIoSocket>());
@@ -55,6 +69,14 @@ public class SocketIoServerWrapper {
 
 	public void stopServer() throws Exception {
 		mServer.stop();
+	}
+
+	public boolean isServerRunning() {
+		return mServer.isRunning();
+	}
+
+	public String getServerState() {
+		return mServer.getState();
 	}
 
 	public void registerNamespace( String namespace ) {
@@ -157,11 +179,27 @@ public class SocketIoServerWrapper {
 		}
 	}
 
-	public void socketSend( String socketId, String event, Object... args ) {
+	public void socketSend( String namespace, String socketId, String event, Object... args ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
 			socket.send( event, args );
+		}
+	}
+
+	public void socketSend( String namespace, String socketId, String event, Object[] args, String ackId ) {
+		SocketIoSocket socket = _getSocket( socketId );
+
+		if ( socket != null ) {
+			socket.send( event, args, new SocketIoSocket.ReceivedByRemoteAcknowledgementCallback() {
+				@Override
+				public void onReceivedByRemote(Object... ackArgs) {
+					Object[] arrayArgs = ackArgs;
+					Object[] luceeArgs = { namespace, socketId, ackId, arrayArgs };
+
+					_luceeCall( "onAckCallback", luceeArgs );
+				}
+			} );
 		}
 	}
 
@@ -221,6 +259,25 @@ public class SocketIoServerWrapper {
 			e.printStackTrace();
 		}
 	}
+
+	public EngineIoServerOptions _setupEngineIoOptions(
+		  boolean  corsHandlingDisabled
+		, long     pingInterval
+		, long     pingTimeout
+		, int      maxTimeoutThreadPoolSize
+		, String[] allowedCorsOrigins
+	) {
+		EngineIoServerOptions options = EngineIoServerOptions.newFromDefault();
+
+		options.setCorsHandlingDisabled( corsHandlingDisabled );
+		options.setPingInterval( pingInterval );
+		options.setPingTimeout( pingTimeout );
+		options.setAllowedCorsOrigins( allowedCorsOrigins );
+		options.setMaxTimeoutThreadPoolSize( maxTimeoutThreadPoolSize );
+		options.setInitialPacket( null );
+
+		return options;
+    }
 
 	private static final class JettyNoLogging implements Logger {
 

@@ -1,0 +1,22 @@
+name: box-test
+description: This is an action to testbox tests for a project
+author: Pixl8 Group
+inputs:
+  boxjson_dir:
+    description: Directory, relative to the root of your project, where the box.json file lives. Defaults to the root and must start with forward slash (/).
+    required: false
+  test_dir:
+    description: Directory, relative to the root of your project, where your test application lives (default /tests)
+    required: false
+  test_server_json:
+    description: File, relative to the root of your project, where server.json definition for your test server lives (defaults ${test_dir}/server.json)
+    required: false
+  output_file:
+    description: File to store results (can be uploaded to artifacts). Default /test-results.txt
+    required: false
+  verbose:
+    description: Whether or not to set the force flag (default is false)
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

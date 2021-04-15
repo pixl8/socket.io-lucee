@@ -33,6 +33,19 @@ component {
 			return arguments.input;
 		} else if ( IsInstanceOf( arguments.input, "org.json.JSONObject" ) ) {
 			return DeserializeJson( arguments.input.toString() );
+		} else if ( IsInstanceOf( arguments.input, "java.lang.Object" ) ) {
+			var className = arguments.input.getClass().getName();
+
+			if ( className contains "io.socket.socketio.server.SocketIoSocket$$Lambda" ) {
+				var in = arguments.input;
+				return function(){
+					var args = [];
+					for( arg in arguments ) {
+						ArrayAppend( args, arguments[ arg ] );
+					}
+					in.sendAcknowledgement( JavaCast( "String[]", args ) );
+				};
+			}
 		}
 
 		return arguments.input;

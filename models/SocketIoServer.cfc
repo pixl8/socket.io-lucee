@@ -19,14 +19,29 @@ component {
 	 * @host.hint Hostname on which the server listens, e.g. 127.0.0.1
 	 * @port.hint The port on which the server listens
 	 * @start.hint Whether or not to immediately start the server
+	 * @enableCorsHandling.hint Whether or not to enable CORS handling
+	 * @pingInterval.hint How often the server + client will ping/pong to verify connection is still alive (in ms)
+	 * @pingTimeout.hint How long to wait for ping/pong responses before judging that the connection has gone away (in ms)
+	 * @maxTimeoutThreadPoolSize.hint Max size of java thread pool for threads that do timeout logic on comms
+	 * @allowedCorsOrigins.hint When CORS enabled, string array of allowed origins - defaults to [ "*" ]
 	 */
 	public any function init(
-		  string  host  = ListFirst( cgi.http_host, ":" )
-		, string  port  = 3000
-		, boolean start = true
+		  string  host                     = ListFirst( cgi.http_host, ":" )
+		, string  port                     = 3000
+		, boolean enableCorsHandling       = false
+		, numeric pingInterval             = 5000
+		, numeric pingTimeout              = 25000
+		, numeric maxTimeoutThreadPoolSize = 20
+		, array   allowedCorsOrigins       = [ "*" ]
+		, boolean start                    = true
 	) {
-		variables._host = arguments.host;
-		variables._port = arguments.port;
+		variables._host                     = arguments.host;
+		variables._port                     = arguments.port;
+		variables._enableCorsHandling       = arguments.enableCorsHandling;
+		variables._pingInterval             = arguments.pingInterval;
+		variables._pingTimeout              = arguments.pingTimeout;
+		variables._maxTimeoutThreadPoolSize = arguments.maxTimeoutThreadPoolSize;
+		variables._allowedCorsOrigins       = arguments.allowedCorsOrigins;
 
 		if ( arguments.start ) {
 			this.start();
@@ -78,7 +93,7 @@ component {
 	}
 
 
-// START/STOP SERVER
+// START/STOP SERVER + STATUS
 	/**
 	 * Starts the server, if it has not already started.
 	 *
@@ -104,6 +119,23 @@ component {
 	 * Alias of Stop()
 	 */
 	public void function shutdown() { this.stop(); }
+
+	/**
+	 * Returns whether or not the server is running
+	 *
+	 */
+	public boolean function isRunning() {
+		return _serverIsRegistered() && _getJavaServer().isServerRunning();
+	}
+
+	/**
+	 * Gets the state of the embedded server. One of:
+	 *
+	 * NOTINITIALIZED,FAILED,RUNNING,STARTED,STARTING,STOPPED,STOPPING
+	 */
+	public string function getState() {
+		return _serverIsRegistered() ? _getJavaServer().getServerState() : "NOTINITIALIZED";
+	}
 
 // PACKAGE METHODS FOR INTERNAL USE
 	/**
@@ -165,17 +197,31 @@ component {
 	 */
 	package void function $send(
 		  required string socketId
+		, required string namespace
 		, required string event
-		,          any    args = []
+		,          any    args  = []
+		,          string ackId = ""
 	) {
 		if ( !IsArray( arguments.args ) ) {
 			arguments.args = [ arguments.args ];
 		}
-		_getJavaServer().socketSend(
-			  arguments.socketId
-			, arguments.event
-			, _prepareArgs( args )
-		);
+
+		if ( Len( arguments.ackId ) ) {
+			_getJavaServer().socketSend(
+				  arguments.namespace
+				, arguments.socketId
+				, arguments.event
+				, _prepareArgs( args )
+				, arguments.ackId
+			);
+		} else {
+			_getJavaServer().socketSend(
+				  arguments.namespace
+				, arguments.socketId
+				, arguments.event
+				, _prepareArgs( args )
+			);
+		}
 	}
 
 	/**
@@ -278,6 +324,23 @@ component {
 		socket.$runEvent( arguments.event, args );
 	}
 
+	/**
+	 * Internal use for the underlying Java framework
+	 * to communicate with our CFML layer
+	 *
+	 */
+	public void function onAckCallback(
+		  required string namespace
+		, required string socketId
+		, required string ackId
+		, required array  args
+	) {
+		var ns     = this.namespace( arguments.namespace );
+		var socket = ns.$getSocket( arguments.socketId );
+
+		socket.$runAckCallback( arguments.ackId, arguments.args );
+	}
+
 // PRIVATE HELPERS
 	/**
 	 * Private access helper to retrieve our underlying
@@ -294,6 +357,11 @@ component {
 				, getPageContext().getApplicationContext() // appContext
 				, variables._host                          // host
 				, variables._port                          // port
+				, !variables._enableCorsHandling           // corsHandlingDisabled
+				, variables._pingInterval                  // pingInterval
+				, variables._pingTimeout                   // pingTimeout
+				, variables._maxTimeoutThreadPoolSize      // maxTimeoutThreadPoolSize
+				, _getAllowedCorsOrigins()                 // allowedCorsOrigins
 			);
 
 			// handy public alias for the default namespace
@@ -340,4 +408,15 @@ component {
 		return arguments.args;
 	}
 
+	/**
+	 * Utility to pass back CORS origins in format that
+	 * is useful for our java lib
+	 *
+	 */
+	private any function _getAllowedCorsOrigins() {
+		if ( !ArrayLen( variables._allowedCorsOrigins ) || ArrayFind( variables._allowedCorsOrigins, "*" ) ) {
+			return JavaCast( "null", NullValue() );
+		}
+		return JavaCast( "String[]", variables._allowedCorsOrigins );
+	}
 }
