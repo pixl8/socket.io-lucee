@@ -57,6 +57,14 @@ component accessors=true {
 	 */
 	public void function emit() { broadcast( argumentCollection=arguments ); }
 
+	/**
+	 * The getSocketCount method returns the number of connected sockets to this namespace
+	 *
+	 */
+	public numeric function getSocketCount() {
+		return StructCount( variables._sockets );
+	}
+
 // PROTECTED INTERNAL METHODS
 	/**
 	 * Internal method that deals with keeping track of sockets
