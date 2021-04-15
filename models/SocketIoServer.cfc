@@ -93,7 +93,7 @@ component {
 	}
 
 
-// START/STOP SERVER
+// START/STOP SERVER + STATUS
 	/**
 	 * Starts the server, if it has not already started.
 	 *
@@ -119,6 +119,23 @@ component {
 	 * Alias of Stop()
 	 */
 	public void function shutdown() { this.stop(); }
+
+	/**
+	 * Returns whether or not the server is running
+	 *
+	 */
+	public boolean function isRunning() {
+		return _serverIsRegistered() && _getJavaServer().isServerRunning();
+	}
+
+	/**
+	 * Gets the state of the embedded server. One of:
+	 *
+	 * NOTINITIALIZED,FAILED,RUNNING,STARTED,STARTING,STOPPED,STOPPING
+	 */
+	public string function getState() {
+		return _serverIsRegistered() ? _getJavaServer().getServerState() : "NOTINITIALIZED";
+	}
 
 // PACKAGE METHODS FOR INTERNAL USE
 	/**

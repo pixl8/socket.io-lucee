@@ -71,6 +71,14 @@ public class SocketIoServerWrapper {
 		mServer.stop();
 	}
 
+	public boolean isServerRunning() {
+		return mServer.isRunning();
+	}
+
+	public String getServerState() {
+		return mServer.getState();
+	}
+
 	public void registerNamespace( String namespace ) {
 		registerNamespace( namespace, false );
 	}

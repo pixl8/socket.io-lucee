@@ -25,6 +25,11 @@ component extends="testbox.system.BaseSpec"{
 				}
 			} );
 
+			it( "should report that it is running", function(){
+				expect( ioServer.isRunning() ).toBe( true );
+				expect( ArrayFind( [ "STARTED", "RUNNING" ], ioServer.getState() ) > 0 ).toBe( true );
+			} );
+
 			it( "should allow connections from clients", function(){
 				var result = _execJs( "/tests/resources/js/test_connect.js" );
 
