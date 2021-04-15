@@ -92,6 +92,14 @@ component {
 		return this.of( "/" ).on( argumentCollection=arguments );
 	}
 
+	/**
+	 * Gets array of registered namespace names
+	 *
+	 */
+	public array function getRegisteredNamespaces() {
+		return StructKeyArray( variables._namespaces );
+	}
+
 
 // START/STOP SERVER + STATUS
 	/**
