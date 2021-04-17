@@ -27,8 +27,6 @@ component accessors=true {
 	 */
 	public void function on( required string event, required any callback ) {
 		variables._eventHandlers[ arguments.event ] = arguments.callback;
-
-		ioserver.$registerOn( namespace=namespace.getName(), socketId=id, event=arguments.event );
 	}
 
 	/**

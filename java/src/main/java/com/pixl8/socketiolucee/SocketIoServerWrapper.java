@@ -114,6 +114,16 @@ public class SocketIoServerWrapper {
 						mSockets.remove( socket.getId() );
 					}
 				} );
+
+				socket.registerAllEventListener( new SocketIoSocket.AllEventListener() {
+					@Override
+					public void event(String eventName, Object... args) {
+						Object[] arrayArgs = args;
+						Object[] luceeArgs = { namespace, socket.getId(), eventName, arrayArgs };
+
+						_luceeCall( "onSocketEvent", luceeArgs );
+					}
+				} );
 			}
 		});
 	}
@@ -198,22 +208,6 @@ public class SocketIoServerWrapper {
 					Object[] luceeArgs = { namespace, socketId, ackId, arrayArgs };
 
 					_luceeCall( "onAckCallback", luceeArgs );
-				}
-			} );
-		}
-	}
-
-	public void socketOn( String namespace, String socketId, String event ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.on( event, new Emitter.Listener() {
-				@Override
-				public void call(Object... args) {
-					Object[] arrayArgs = args;
-					Object[] luceeArgs = { namespace, socketId, event, arrayArgs };
-
-					_luceeCall( "onSocketEvent", luceeArgs );
 				}
 			} );
 		}
