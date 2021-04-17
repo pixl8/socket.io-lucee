@@ -8,10 +8,11 @@
  */
 component accessors=true {
 
-	property name="id"          type="string"            hint="The ID of the socket, as provided by our underlying embedded java servlet.";
-	property name="namespace"   type="SocketIoNamespace" hint="The namespace to which the socket is connected.";
-	property name="ioserver"    type="SocketIoServer"    hint="The SocketIoServer object in which the socket and namespace exist.";
-	property name="httpRequest" type="SocketIoRequest"   hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
+	property name="id"          type="string"                    hint="The ID of the socket, as provided by our underlying embedded java servlet.";
+	property name="namespace"   type="SocketIoNamespace"         hint="The namespace to which the socket is connected.";
+	property name="ioserver"    type="SocketIoServer"            hint="The SocketIoServer object in which the socket and namespace exist.";
+	property name="httpRequest" type="SocketIoRequest"           hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
+	property name="executor"    type="ISocketIoCallbackExecutor" hint="Implementation for executing registered callbacks on the socket";
 
 	variables._eventHandlers = {};
 	variables._ackCallbacks = {};
@@ -21,7 +22,7 @@ component accessors=true {
 	 * Register an incoming event listener from the connected socket.
 	 *
 	 * @event.hint The name of the event to listen to.
-	 * @callback.hint Closure UDF with logic to process the event. Receives positional arguments that were sent by the client.
+	 * @callback.hint Closure UDF (or something else if using custom executor) with logic to process the event. Receives positional arguments that were sent by the client.
 	 */
 	public void function on( required string event, required any callback ) {
 		variables._eventHandlers[ arguments.event ] = arguments.callback;
@@ -131,8 +132,9 @@ component accessors=true {
 	 */
 	package void function $runEvent( required string event, required array args ) {
 		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
-			_eventHandlers[ arguments.event ](
-				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
+			executor.execute(
+				  callback = _eventHandlers[ arguments.event ]
+				, args     = arguments.args
 			);
 		}
 	}
