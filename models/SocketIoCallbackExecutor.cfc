@@ -10,8 +10,17 @@ component implements="ISocketIoCallbackExecutor" {
 	 * the callback is an inline function that can be
 	 * executed directly.
 	 *
+	 * @callback.hint  The registered callback for the event
+	 * @args.hint      The arguments passed to the event
+	 * @namespace.hint The namespace that the event was registered in (or that the socket belongs to)
+	 * @socket.hint    Optional - socket on which the event is triggered
 	 */
-	public void function execute( required any callback, required array args ) {
+	public void function execute(
+		  required any   callback
+		, required array args
+		, required any   namespace
+		,          any   socket
+	) {
 		arguments.callback( argumentCollection=SocketIoUtils::arrayToArgs( arguments.args ) );
 	}
 

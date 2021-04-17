@@ -111,8 +111,9 @@ component accessors=true {
 	package void function $runEvent( required string event, required array args ) {
 		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
 			executor.execute(
-				  callback = _eventHandlers[ arguments.event ]
-				, args     = arguments.args
+				  callback  = _eventHandlers[ arguments.event ]
+				, args      = arguments.args
+				, namespace = this
 			);
 		}
 	}
