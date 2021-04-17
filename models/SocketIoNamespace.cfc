@@ -72,13 +72,24 @@ component accessors=true {
 	 * connected to this namespace.
 	 *
 	 */
-	package SocketIoSocket function $registerSocket( required string socketId ) {
+	package SocketIoSocket function $registerSocket( required string socketId, any initialRequest ) {
 		if ( !StructKeyExists( variables._sockets, arguments.socketId ) ) {
+			if ( StructKeyExists( arguments, "initialRequest" ) ) {
+				var socketHttpReq = new SocketIoRequest(
+					  cookies     = arguments.initialRequest.get( "cookies"     )
+					, headers     = arguments.initialRequest.get( "headers"     )
+					, uri         = arguments.initialRequest.get( "uri"         )
+					, queryString = arguments.initialRequest.get( "querystring" )
+					, remoteUser  = arguments.initialRequest.get( "remoteUser"  )
+				);
+			}
+
 			variables._sockets[ arguments.socketId ] = new SocketIoSocket(
 				  id          = arguments.socketId
 				, namespace   = this
 				, ioserver    = ioserver
 				, eventRunner = eventRunner
+				, httpRequest = socketHttpReq ?: NullValue()
 			);
 		}
 

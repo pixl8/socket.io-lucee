@@ -264,14 +264,6 @@ component {
 	 * Internal use for namespace and socket objects
 	 * to communicate with underlying Java framework.
 	 */
-	package void function $registerOn( required string namespace, required string socketId, required string event ) {
-		_getJavaServer().socketOn( arguments.namespace, arguments.socketId, arguments.event );
-	}
-
-	/**
-	 * Internal use for namespace and socket objects
-	 * to communicate with underlying Java framework.
-	 */
 	package void function $disconnect( required string socketId, required boolean close ) {
 		_getJavaServer().socketDisconnect( arguments.socketId, arguments.close );
 	}
@@ -284,15 +276,7 @@ component {
 	 */
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
-		var socket = ns.$registerSocket( arguments.socketId );
-
-		socket.setHttpRequest( new SocketIoRequest(
-			  cookies     = arguments.initialRequest.get( "cookies"     )
-			, headers     = arguments.initialRequest.get( "headers"     )
-			, uri         = arguments.initialRequest.get( "uri"         )
-			, queryString = arguments.initialRequest.get( "querystring" )
-			, remoteUser  = arguments.initialRequest.get( "remoteUser"  )
-		) );
+		var socket = ns.$registerSocket( arguments.socketId, arguments.initialRequest );
 
 		ns.$runEvent( "connect", [ socket ] );
 	}
