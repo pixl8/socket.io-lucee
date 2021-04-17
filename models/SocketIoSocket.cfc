@@ -8,12 +8,12 @@
  */
 component accessors=true {
 
-	property name="id"          type="string"                    hint="The ID of the socket, as provided by our underlying embedded java servlet.";
-	property name="namespace"   type="SocketIoNamespace"         hint="The namespace to which the socket is connected.";
-	property name="ioserver"    type="SocketIoServer"            hint="The SocketIoServer object in which the socket and namespace exist.";
-	property name="httpRequest" type="SocketIoRequest"           hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
-	property name="executor"    type="ISocketIoCallbackExecutor" hint="Implementation for executing registered callbacks on the socket";
-	property name="socketData"  type="struct"                    hint="Additional data struct with which to store any application specific data - like a session but for the socket";
+	property name="id"          type="string"               hint="The ID of the socket, as provided by our underlying embedded java servlet.";
+	property name="namespace"   type="SocketIoNamespace"    hint="The namespace to which the socket is connected.";
+	property name="ioserver"    type="SocketIoServer"       hint="The SocketIoServer object in which the socket and namespace exist.";
+	property name="httpRequest" type="SocketIoRequest"      hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
+	property name="eventRunner" type="ISocketIoEventRunner" hint="Implementation for executing client event calls";
+	property name="socketData"  type="struct"               hint="Additional data struct with which to store any application specific data - like a session but for the socket";
 
 	variables._eventHandlers = {};
 	variables._ackCallbacks = {};
@@ -23,7 +23,7 @@ component accessors=true {
 	 * Register an incoming event listener from the connected socket.
 	 *
 	 * @event.hint The name of the event to listen to.
-	 * @callback.hint Closure UDF (or something else if using custom executor) with logic to process the event. Receives positional arguments that were sent by the client.
+	 * @callback.hint Closure UDF with logic to process the event. Receives positional arguments that were sent by the client.
 	 */
 	public void function on( required string event, required any callback ) {
 		variables._eventHandlers[ arguments.event ] = arguments.callback;
@@ -132,14 +132,13 @@ component accessors=true {
 	 *
 	 */
 	package void function $runEvent( required string event, required array args ) {
-		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
-			executor.execute(
-				  callback  = variables._eventHandlers[ arguments.event ]
-				, args      = arguments.args
-				, namespace = namespace
-				, socket    = this
-			);
-		}
+		eventRunner.run(
+			  event     = arguments.event
+			, args      = arguments.args
+			, namespace = namespace
+			, listeners = variables._eventHandlers
+			, socket    = this
+		);
 	}
 
 	/**
@@ -148,16 +147,15 @@ component accessors=true {
 	 *
 	 */
 	package void function $runAckCallback( required string ackId, required array args ) {
-		if ( StructKeyExists( variables._ackCallbacks, arguments.ackId ) ) {
-			executor.execute(
-				  callback  = variables._ackCallbacks[ arguments.ackId ]
-				, args      = arguments.args
-				, namespace = namespace
-				, socket    = this
-			);
+		eventRunner.run(
+			  event     = arguments.ackId
+			, args      = arguments.args
+			, namespace = namespace
+			, listeners = variables._ackCallbacks
+			, socket    = this
+		);
 
-			StructDelete( variables._ackCallbacks, arguments.ackId );
-		}
+		StructDelete( variables._ackCallbacks, arguments.ackId );
 	}
 
 }

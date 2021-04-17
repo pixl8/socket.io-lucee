@@ -9,9 +9,9 @@
  */
 component accessors=true {
 
-	property name="name"     type="string";
-	property name="ioserver" type="SocketIoServer";
-	property name="executor" type="ISocketIoCallbackExecutor";
+	property name="name"        type="string";
+	property name="ioserver"    type="SocketIoServer";
+	property name="eventRunner" type="ISocketIoEventRunner";
 
 	variables._sockets = {};
 	variables._eventHandlers = {};
@@ -27,7 +27,7 @@ component accessors=true {
 	 * All event callbacks will receive a socket object as their sole argument.
 	 *
 	 * @event.hint The name of the event (either 'connect', 'disconnect' or 'disconnecting')
-	 * @callback.hint Closure function (or something else if using a custom executor) with logic to process the event
+	 * @callback.hint Closure function with logic to process the event
 	 */
 	public void function on( required string event, required any callback ) {
 		variables._eventHandlers[ arguments.event ] = arguments.callback;
@@ -75,10 +75,10 @@ component accessors=true {
 	package SocketIoSocket function $registerSocket( required string socketId ) {
 		if ( !StructKeyExists( variables._sockets, arguments.socketId ) ) {
 			variables._sockets[ arguments.socketId ] = new SocketIoSocket(
-				  id        = arguments.socketId
-				, namespace = this
-				, ioserver  = ioserver
-				, executor  = executor
+				  id          = arguments.socketId
+				, namespace   = this
+				, ioserver    = ioserver
+				, eventRunner = eventRunner
 			);
 		}
 
@@ -109,13 +109,12 @@ component accessors=true {
 	 *
 	 */
 	package void function $runEvent( required string event, required array args ) {
-		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
-			executor.execute(
-				  callback  = _eventHandlers[ arguments.event ]
-				, args      = arguments.args
-				, namespace = this
-			);
-		}
+		eventRunner.run(
+			  event     = arguments.event
+			, args      = arguments.args
+			, listeners = _eventHandlers
+			, namespace = this
+		);
 	}
 
 }
