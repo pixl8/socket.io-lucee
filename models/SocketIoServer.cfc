@@ -24,16 +24,18 @@ component {
 	 * @pingTimeout.hint How long to wait for ping/pong responses before judging that the connection has gone away (in ms)
 	 * @maxTimeoutThreadPoolSize.hint Max size of java thread pool for threads that do timeout logic on comms
 	 * @allowedCorsOrigins.hint When CORS enabled, string array of allowed origins - defaults to [ "*" ]
+	 * @executor.hint Pass a custom callback executor to allow defining `on` callbacks that are something other than an inline function with closure
 	 */
 	public any function init(
-		  string  host                     = ListFirst( cgi.http_host, ":" )
-		, string  port                     = 3000
-		, boolean enableCorsHandling       = false
-		, numeric pingInterval             = 5000
-		, numeric pingTimeout              = 25000
-		, numeric maxTimeoutThreadPoolSize = 20
-		, array   allowedCorsOrigins       = [ "*" ]
-		, boolean start                    = true
+		  string                    host                     = ListFirst( cgi.http_host, ":" )
+		, string                    port                     = 3000
+		, boolean                   enableCorsHandling       = false
+		, numeric                   pingInterval             = 5000
+		, numeric                   pingTimeout              = 25000
+		, numeric                   maxTimeoutThreadPoolSize = 20
+		, array                     allowedCorsOrigins       = [ "*" ]
+		, boolean                   start                    = true
+		, ISocketIoCallbackExecutor executor                 = new SocketIoCallbackExecutor()
 	) {
 		variables._host                     = arguments.host;
 		variables._port                     = arguments.port;
@@ -42,6 +44,7 @@ component {
 		variables._pingTimeout              = arguments.pingTimeout;
 		variables._maxTimeoutThreadPoolSize = arguments.maxTimeoutThreadPoolSize;
 		variables._allowedCorsOrigins       = arguments.allowedCorsOrigins;
+		variables._executor                 = arguments.executor;
 
 		if ( arguments.start ) {
 			this.start();
@@ -74,6 +77,7 @@ component {
 			var ns = new SocketIoNamespace(
 				  name     = arguments.namespace
 				, ioserver = this
+				, executor = variables._executor
 			);
 
 			variables._namespaces[ arguments.namespace ] = ns;
@@ -86,7 +90,7 @@ component {
 	 * Register an event listener with the default namespace (proxy to namespace.on()).
 	 *
 	 * @event.hint The name of the event to listen to, valid values are: connect, disconnect and disconnecting
-	 * @callback.hint Closure function with which to handle the event. The function will be passed a socket object as its single argument.
+	 * @callback.hint Closure function (or something else if using a custom executor) with which to handle the event. The function will be passed a socket object as its single argument.
 	 */
 	public void function on( required string event, required any callback ) {
 		return this.of( "/" ).on( argumentCollection=arguments );
