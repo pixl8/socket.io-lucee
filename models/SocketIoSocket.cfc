@@ -133,8 +133,10 @@ component accessors=true {
 	package void function $runEvent( required string event, required array args ) {
 		if ( StructKeyExists( variables._eventHandlers, arguments.event ) ) {
 			executor.execute(
-				  callback = _eventHandlers[ arguments.event ]
-				, args     = arguments.args
+				  callback  = variables._eventHandlers[ arguments.event ]
+				, args      = arguments.args
+				, namespace = namespace
+				, socket    = this
 			);
 		}
 	}
@@ -146,8 +148,11 @@ component accessors=true {
 	 */
 	package void function $runAckCallback( required string ackId, required array args ) {
 		if ( StructKeyExists( variables._ackCallbacks, arguments.ackId ) ) {
-			variables._ackCallbacks[ arguments.ackId ](
-				argumentCollection = SocketIoUtils::arrayToArgs( arguments.args )
+			executor.execute(
+				  callback  = variables._ackCallbacks[ arguments.ackId ]
+				, args      = arguments.args
+				, namespace = namespace
+				, socket    = this
 			);
 
 			StructDelete( variables._ackCallbacks, arguments.ackId );
