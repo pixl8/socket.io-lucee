@@ -13,6 +13,7 @@ component accessors=true {
 	property name="ioserver"    type="SocketIoServer"            hint="The SocketIoServer object in which the socket and namespace exist.";
 	property name="httpRequest" type="SocketIoRequest"           hint="The original HTTP request that triggered the socket connection. Useful for getting information for authentication and other delegating logic.";
 	property name="executor"    type="ISocketIoCallbackExecutor" hint="Implementation for executing registered callbacks on the socket";
+	property name="socketData"  type="struct"                    hint="Additional data struct with which to store any application specific data - like a session but for the socket";
 
 	variables._eventHandlers = {};
 	variables._ackCallbacks = {};
