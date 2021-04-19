@@ -41,4 +41,4 @@ setTimeout(function () {
     successCheck();
     console.log( "failure" );
     process.exit(1);
-}, 2000);
+}, 5000);
