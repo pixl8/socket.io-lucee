@@ -15,11 +15,28 @@ component {
 		var args = createObject( "java", "java.util.TreeMap" ).init();
 
 		for( var i=1; i<=ArrayLen( arguments.input ); i++ ){
-			args.put( JavaCast( "String", i ), static.javaTypeConverter( arguments.input[ i ] ) );
+			args.put( JavaCast( "String", i ), arguments.input[ i ] );
 		}
 
 		return args;
 	}
+
+	/**
+	 * The eventArgsToCf converts array of objects sent with socket event
+	 * into native format that CF can understand.
+	 *
+	 * @input.hint The raw Object[] from the java implementation
+	 */
+	public static array function eventArgsToCf( required array input ) {
+		var cfArray = [];
+
+		for( var i=1; i<=ArrayLen( arguments.input ); i++ ){
+			ArrayAppend( cfArray, static.javaTypeConverter( arguments.input[ i ] ) );
+		}
+
+		return cfArray;
+	}
+
 
 	/**
 	 * The javaTypeConverter method takes input from the java client
