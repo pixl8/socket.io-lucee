@@ -100,7 +100,6 @@ component extends="testbox.system.BaseSpec"{
 				var joinedCount = { foo=0, bar=0 };
 				var resultCheck = function(){
 					if ( joinedCount.foo >= 2 && joinedCount.bar >= 2) {
-						SystemOutput( "Broadcasting now..." );
 						thread ioserver=ioserver name=CreateUUId() {
 							attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
 						}
@@ -134,7 +133,10 @@ component extends="testbox.system.BaseSpec"{
 
 					socket.on( "foo", function(){
 						if ( sockets.len() > 1 ) {
-							sockets[1].broadcast( "bar" );
+							thread ioserver=ioserver socket=sockets[ 1 ] name=CreateUUId() {
+								attributes.socket.broadcast( "bar" );
+								sleep( 500 );
+							}
 						}
 					} );
 				} );
