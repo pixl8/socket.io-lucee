@@ -97,31 +97,28 @@ component extends="testbox.system.BaseSpec"{
 			} );
 
 			it( "should allow broadcasting to multiple rooms in a namespace", function(){
-				var broadcasted = false;
-				var joinedCount = 0;
+				var joinedCount = { foo=0, bar=0 };
+				var resultCheck = function(){
+					if ( joinedCount.foo >= 2 && joinedCount.bar >= 2) {
+						SystemOutput( "Broadcasting now..." );
+						thread ioserver=ioserver name=CreateUUId() {
+							attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
+						}
+						sleep( 500 );
+						break;
+					}
+				}
 
 				variables.ioServer.on( "connect", function( socket ){
 					socket.on( "join_foo", function(){
-						joinedCount++;
+						joinedCount.foo++;
 						socket.joinRoom( "foo" );
-						if ( joinedCount>=2 && !broadcasted ) {
-							broadcasted = true;
-							thread ioserver=ioserver name=CreateUUId() {
-								sleep( 500 );
-								attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
-							}
-						}
+						resultCheck();
 					} );
 					socket.on( "join_bar", function(){
-						joinedCount++;
+						joinedCount.bar++;
 						socket.joinRoom( "bar" );
-						if ( joinedCount>=2 && !broadcasted ) {
-							broadcasted = true;
-							thread ioserver=ioserver name=CreateUUId() {
-								sleep( 500 );
-								attributes.ioServer.sockets.broadcast( "foo", [], [ "foo", "bar" ] );
-							}
-						}
+						resultCheck();
 					} );
 				} );
 
