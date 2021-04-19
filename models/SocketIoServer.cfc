@@ -317,7 +317,7 @@ component {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$getSocket( arguments.socketId );
 
-		socket.$runEvent( arguments.event, args );
+		socket.$runEvent( arguments.event, SocketIoUtils::eventArgsToCf( args ) );
 	}
 
 	/**
