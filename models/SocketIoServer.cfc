@@ -25,6 +25,7 @@ component {
 	 * @maxTimeoutThreadPoolSize.hint Max size of java thread pool for threads that do timeout logic on comms
 	 * @allowedCorsOrigins.hint When CORS enabled, string array of allowed origins - defaults to [ "*" ]
 	 * @eventRunner.hint Pass a custom event runner to allow alternative methods for executing socket and namespace listeners and ack callbacks
+	 * @adapter.hint Pass a custom ISocketIoAdapter instance to allow alternative methods for tracking sockets joining namespaces and rooms and to broadcast to those sockets
 	 */
 	public any function init(
 		  string               host                     = ListFirst( cgi.http_host, ":" )
@@ -36,6 +37,7 @@ component {
 		, array                allowedCorsOrigins       = [ "*" ]
 		, boolean              start                    = true
 		, ISocketIoEventRunner eventRunner              = new SocketIoDefaultEventRunner()
+		, ISocketIoAdapter     adapter                  = new SocketIoDefaultAdapter()
 	) {
 		variables._host                     = arguments.host;
 		variables._port                     = arguments.port;
@@ -45,6 +47,7 @@ component {
 		variables._maxTimeoutThreadPoolSize = arguments.maxTimeoutThreadPoolSize;
 		variables._allowedCorsOrigins       = arguments.allowedCorsOrigins;
 		variables._eventRunner              = arguments.eventRunner;
+		variables._adapter                  = arguments.adapter;
 
 		if ( arguments.start ) {
 			this.start();
@@ -152,14 +155,14 @@ component {
 // PACKAGE METHODS FOR INTERNAL USE
 	/**
 	 * Internal use for namespace and socket objects
-	 * to communicate with underlying Java framework.
+	 * to communicate with underlying broadcast adapter
 	 */
 	package void function $broadcast(
 		  required string event
-		,          any    args  = []
-		,          any    rooms = []
-		,          string namespace = ""
 		,          string socketId  = ""
+		,          string namespace = ""
+		,          any    args      = []
+		,          any    rooms     = []
 	) {
 		if ( !IsArray( arguments.args ) ) {
 			arguments.args = [ arguments.args ];
@@ -169,36 +172,19 @@ component {
 		}
 
 		if ( Len( arguments.namespace ) ) {
-			if ( ArrayLen( arguments.rooms ) ) {
-				_getJavaServer().namespaceBroadcast(
-					  arguments.namespace
-					, JavaCast( "String[]", arguments.rooms )
-					, arguments.event
-					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
-				);
-			} else {
-				_getJavaServer().namespaceBroadcast(
-					  arguments.namespace
-					, arguments.event
-					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
-				);
-			}
+			variables._adapter.namespaceBroadcast(
+				  namespace = arguments.namespace
+				, event     = arguments.event
+				, rooms     = arguments.rooms
+				, args      = arguments.args
+			);
 		} else if ( Len( arguments.socketId ) ) {
-			if ( ArrayLen( arguments.rooms ) ) {
-				_getJavaServer().socketBroadcast(
-					  arguments.socketId
-					, JavaCast( "String[]", arguments.rooms )
-					, arguments.event
-					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
-				);
-			} else {
-				_getJavaServer().socketBroadcast(
-					  arguments.socketId
-					, arguments.event
-					, JavaCast( "Object[]", _prepareArgs( arguments.args ) )
-				);
-			}
-
+			variables._adapter.socketBroadcast(
+				  socketId = arguments.socketId
+				, event    = arguments.event
+				, rooms    = arguments.rooms
+				, args     = arguments.args
+			);
 		}
 
 	}
@@ -238,26 +224,26 @@ component {
 
 	/**
 	 * Internal use for namespace and socket objects
-	 * to communicate with underlying Java framework.
+	 * to communicate with underlying broadcast adapter
 	 */
 	package void function $joinRoom( required string socketId, required string roomName ) {
-		_getJavaServer().socketJoinRoom( arguments.socketId, arguments.roomName );
+		variables._adapter.joinRoom( arguments.socketId, arguments.roomName );
 	}
 
 	/**
 	 * Internal use for namespace and socket objects
-	 * to communicate with underlying Java framework.
+	 * to communicate with underlying broadcast adapter
 	 */
 	package void function $leaveRoom( required string socketId, required string roomName ) {
-		_getJavaServer().socketLeaveRoom( arguments.socketId, arguments.roomName );
+		variables._adapter.leaveRoom( arguments.socketId, arguments.roomName );
 	}
 
 	/**
 	 * Internal use for namespace and socket objects
-	 * to communicate with underlying Java framework.
+	 * to communicate with underlying broadcast adapter
 	 */
 	package void function $leaveAllRooms( required string socketId ) {
-		_getJavaServer().socketLeaveAllRooms( arguments.socketId );
+		variables._adapter.leaveAllRooms( arguments.socketId );
 	}
 
 	/**
@@ -265,6 +251,7 @@ component {
 	 * to communicate with underlying Java framework.
 	 */
 	package void function $disconnect( required string socketId, required boolean close ) {
+		variables._adapter.deregisterSocket( arguments.socketId );
 		_getJavaServer().socketDisconnect( arguments.socketId, arguments.close );
 	}
 
@@ -277,6 +264,8 @@ component {
 	public void function onConnect( required string namespace, required string socketId, required any initialRequest ) {
 		var ns     = this.namespace( arguments.namespace );
 		var socket = ns.$registerSocket( arguments.socketId, arguments.initialRequest );
+
+		variables._adapter.registerSocket( socket );
 
 		ns.$runEvent( "connect", [ socket ] );
 	}
@@ -306,6 +295,7 @@ component {
 			rethrow;
 		} finally {
 			ns.$deRegisterSocket( arguments.socketId );
+			variables._adapter.deRegisterSocket( arguments.socketId );
 		}
 	}
 
