@@ -42,10 +42,8 @@ component implements="ISocketIoAdapter" {
 			StructDelete( socketsToReceive, arguments.excludeSocket );
 		}
 
-
-
 		for( var socketId in socketsToReceive ) {
-			socketsToReceive[ socketId ].emit( arguments.event, arguments.args );
+			socketsToReceive[ socketId ].emit( arguments.event, Duplicate( arguments.args ) );
 		}
 	}
 
