@@ -132,60 +132,12 @@ public class SocketIoServerWrapper {
 		return mSocketIoServer.hasNamespace( namespace );
 	}
 
-// NAMESPACE PROXIES
-	public void namespaceBroadcast( String ns, String event, Object[] args ) {
-		namespaceBroadcast( ns, new String[]{ ns }, event, args );
-	}
-	public void namespaceBroadcast( String ns, String[] rooms, String event, Object[] args ) {
-		mSocketIoServer.namespace( ns ).broadcast( rooms, event, args );
-	}
-
 // SOCKET PROXIES
-	public void socketBroadcast( String socketId, String event, Object[] args ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.broadcast( event, args );
-		}
-	}
-
-	public void socketBroadcast( String socketId, String[] rooms, String event, Object[] args ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.broadcast( rooms, event, args );
-		}
-	}
-
 	public void socketDisconnect( String socketId, boolean close ) {
 		SocketIoSocket socket = _getSocket( socketId );
 
 		if ( socket != null ) {
 			socket.disconnect( close );
-		}
-	}
-
-	public void socketJoinRoom( String socketId, String room ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.joinRoom( room );
-		}
-	}
-
-	public void socketLeaveRoom( String socketId, String room ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.leaveRoom( room );
-		}
-	}
-
-	public void socketLeaveAllRooms( String socketId ) {
-		SocketIoSocket socket = _getSocket( socketId );
-
-		if ( socket != null ) {
-			socket.leaveAllRooms();
 		}
 	}
 
