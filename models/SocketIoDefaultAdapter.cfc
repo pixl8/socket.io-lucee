@@ -38,12 +38,10 @@ component implements="ISocketIoAdapter" {
 			socketsToReceive = namespaceStore.sockets;
 		}
 
-		if ( Len( arguments.excludeSocket ) ) {
-			StructDelete( socketsToReceive, arguments.excludeSocket );
-		}
-
 		for( var socketId in socketsToReceive ) {
-			socketsToReceive[ socketId ].emit( arguments.event, Duplicate( arguments.args ) );
+			if ( socketId != arguments.excludeSocket ) {
+				socketsToReceive[ socketId ].emit( arguments.event, Duplicate( arguments.args ) );
+			}
 		}
 	}
 
