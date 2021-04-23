@@ -8,6 +8,17 @@ component implements="ISocketIoAdapter" {
 	variables._namespaces = {};
 	variables._sockets = {};
 
+	/**
+	 * Broadcasts an event+args combination to
+	 * all connected sockets in the namespace, optionally filtered
+	 * by passed array of room names.
+	 *
+	 * @namespace.hint     The ID of the namespace to broadcast to
+	 * @event.hint         The name of the event
+	 * @rooms.hint         Array of room names (can be empty for all rooms)
+	 * @args.hint          Array of args to send with the event
+	 * @excludeSocket.hint (Internal use) ID of socket to exclude from the broadcast. Used when proxied from socketBroadcast()
+	 */
 	public void function namespaceBroadcast(
 		  required string namespace
 		, required string event
@@ -38,6 +49,16 @@ component implements="ISocketIoAdapter" {
 		}
 	}
 
+	/**
+	 * Broadcasts an event+args combination to
+	 * all connected sockets in the given socket's namespace, optionally filtered
+	 * by passed array of room names and *excluding the socket doing the broadcasting*.
+	 *
+	 * @socketId.hint      The ID of the socket doing the broadcasting
+	 * @event.hint         The name of the event
+	 * @rooms.hint         Array of room names (can be empty for all rooms)
+	 * @args.hint          Array of args to send with the event
+	 */
 	public void function socketBroadcast(
 		  required string socketId
 		, required string event
@@ -58,6 +79,11 @@ component implements="ISocketIoAdapter" {
 
 	}
 
+	/**
+	 * Register a socket with the adapter.
+	 *
+	 * @socket SocketIoSocket object representing the connected socket
+	 */
 	public void function registerSocket( required SocketIoSocket socket ) {
 		var ns = arguments.socket.getNamespace().getName();
 		var id = arguments.socket.getId();
@@ -72,6 +98,11 @@ component implements="ISocketIoAdapter" {
 		namespaceStore.sockets[ id ] = arguments.socket;
 	}
 
+	/**
+	 * Deregister a socket from the adapter.
+	 *
+	 * @socketId The ID of the socket to forget
+	 */
 	public void function deregisterSocket( required string socketId ){
 		var socketinfo = variables._sockets[ arguments.socketId ] ?: {};
 
@@ -85,6 +116,12 @@ component implements="ISocketIoAdapter" {
 		}
 	}
 
+	/**
+	 * Registers the socket to a room.
+	 *
+	 * @socketId The ID of the socket to forget
+	 * @roomName The name of the room to join
+	 */
 	public void function joinRoom( required string socketId, required string roomName ){
 		var socketinfo = variables._sockets[ arguments.socketId ] ?: {};
 
@@ -99,6 +136,12 @@ component implements="ISocketIoAdapter" {
 
 	}
 
+	/**
+	 * Deregisters the socket from a room.
+	 *
+	 * @socketId The ID of the socket to forget
+	 * @roomName The name of the room to join
+	 */
 	public void function leaveRoom( required string socketId, required string roomName ){
 		var socketinfo = variables._sockets[ arguments.socketId ] ?: {};
 
@@ -112,6 +155,11 @@ component implements="ISocketIoAdapter" {
 		}
 	}
 
+	/**
+	 * Deregisters the socket from all rooms.
+	 *
+	 * @socketId The ID of the socket to forget
+	 */
 	public void function leaveAllRooms( required string socketId ){
 		var socketinfo = variables._sockets[ arguments.socketId ] ?: {};
 
