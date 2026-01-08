@@ -372,7 +372,8 @@ component {
 	private void function _registerBundle() {
 		var cfmlEngine = CreateObject( "java", "lucee.loader.engine.CFMLEngineFactory" ).getInstance();
 		var osgiUtil   = CreateObject( "java", "lucee.runtime.osgi.OSGiUtil" );
-		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/socketio-lucee-1.0.0.jar" );
+		var jar        = _isJakarta() ? "socketio-lucee-jakarta.jar" : "socketio-lucee-javax.jar";
+		var lib        = ExpandPath( GetDirectoryFromPath( GetCurrentTemplatePath() ) & "../lib/#jar#" );
 		var resource   = cfmlEngine.getResourceUtil().toResourceExisting( getPageContext(), lib );
 
 		osgiUtil.installBundle( cfmlEngine.getBundleContext(), resource, true );
@@ -404,5 +405,18 @@ component {
 			return JavaCast( "null", NullValue() );
 		}
 		return JavaCast( "String[]", variables._allowedCorsOrigins );
+	}
+
+	private boolean function _isJakarta() {
+		if ( !StructKeyExists( variables, "isJakarta" ) ) {
+			try {
+				createObject( "java", "jakarta.servlet.ServletException" );
+				variables.isJakarta = true;
+			} catch( any e ) {
+				variables.isJakarta = false;
+			}
+		}
+
+		return variables.isJakarta;
 	}
 }
