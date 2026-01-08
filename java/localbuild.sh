@@ -1,9 +1,11 @@
 #!/bin/bash
 
-rm -rf artifacts/*
+rm -rf artifacts
+mkdir -p artifacts
 mvn package
+cp target/socketio-lucee-1.0.0-jar-with-dependencies.jar artifacts/socketio-lucee-1.0.0.jar
 cd artifacts
-unzip socketio-lucee-1.0.0.jar
+unzip -q socketio-lucee-1.0.0.jar
 echo "Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SocketIO-Java Server Implementation with Lucee bindings
