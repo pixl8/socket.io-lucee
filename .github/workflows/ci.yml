@@ -3,25 +3,21 @@ on:
   push:
   pull_request:
 jobs:
-  ci:
-    name: CI
+  javabuild:
+    name: Java build
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[twgit] Init') && github.ref != 'refs/heads/stable'"
     steps:
-      - name: Setup flow variables
-        run: |
-          branch=${GITHUB_REF##*/}
-          publish=false
-          if [[ "{{ env.event.name }}" != "pull_request" ]] ; then
-            if [[ $branch == v* ]] ; then
-              publish=true
-            fi
-          fi
-          echo "PUBLISH=$publish" >> $GITHUB_ENV
-
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
       - name: Build jars
         run: cd java && mvn package
@@ -40,39 +36,107 @@ jobs:
           zip -rq socketio-lucee-1.0.0.jar * && \
           cp socketio-lucee-1.0.0.jar ../../lib/
 
-      - name: Install dependencies
-        uses: pixl8/github-action-box-install@v2
+      - name: Upload Java Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          boxjson_dir: /tests
-          verbose: true
-          force: true
+          name: socketio-lucee-java-artifacts
+          path: lib/*.jar
+
+  runtests:
+    name: Run test matrix
+    needs: javabuild
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[twgit] Init') && github.ref != 'refs/heads/stable'"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cfengine: "lucee@5.4"
+            jdkVersion: "11"
+            experimental: false
+          - cfengine: "lucee@6.2"
+            jdkVersion: "21"
+            experimental: false
+          - cfengine: "lucee@7.0"
+            jdkVersion: "24"
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Java Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: socketio-lucee-java-artifacts
+          path: lib
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ matrix.jdkVersion }}
+
+      - name: Setup CommandBox CLI
+        uses: Ortus-Solutions/setup-commandbox@v2.0.1
+
+      - name: Install dependencies
+        run: cd tests && box install --force --verbose
 
       - name: Install test node modules
         run: cd tests/resources/js && npm install
         shell: bash
 
-      - name: Run tests
-        uses: ./.github/actions/test
-        with:
-          boxjson_dir: /tests
-          test_dir: /tests
-          test_server_json: /tests/server-tests.json
-          output_file: /tests/test-results.txt
-          verbose: true
+      - name: Start ${{ matrix.cfengine }} Server
+        run: |
+          # Startup the Server
+          box server start directory="${GITHUB_WORKSPACE}/tests" serverConfigFile="${GITHUB_WORKSPACE}/tests/server-tests.json" cfengine="${{ matrix.cfengine }}" --noSaveSettings --debug
+          # Test site build up
+          curl http://127.0.0.1:7331
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v1
+      - name: Run tests
+        run: |
+          mkdir -p tests/results
+          exitcode=0
+          box testbox run --verbose outputFile=tests/results/test-results outputFormats=json,antjunit
+
+      - name: Upload Test Results Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: tests/test-results.txt
+          name: socketio-lucee-test-results-${{ matrix.cfengine }}-jdk${{ matrix.jdkVersion }}
+          path: |
+            tests/results/*
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: tests/results/*.xml
+
+  publish:
+    name: Publish
+    needs: runtests
+    runs-on: ubuntu-latest
+    if: "success() && github.event_name != 'pull_request' && ( startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/release-' ) )"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Java Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: socketio-lucee-java-artifacts
+          path: lib
 
       - name: Generate release version number
-        if: "env.PUBLISH == 'true'"
         id: versiongen
-        uses: pixl8/github-action-twgit-release-version-generator@v1
+        uses: pixl8/github-action-twgit-release-version-generator@v2
 
       - name: Inject version into box json
-        if: "env.PUBLISH == 'true'"
         uses: dominicwatson/github-action-envsubst@v1
         with:
           files: box.json
@@ -81,27 +145,23 @@ jobs:
           VERSION_NUMBER: ${{ steps.versiongen.outputs.semver_release_string }}
 
       - name: Zip project
-        if: "env.PUBLISH == 'true'"
-
         run: zip -rq $ZIP_FILE * --exclude=".*" --exclude="\.git/*" --exclude="\.github/*" --exclude="\docs/*" --exclude="\java/*" --exclude="\tests/*"
         shell: bash
         env:
           ZIP_FILE: ${{ steps.versiongen.outputs.semver_release_number }}.zip
 
       - name: Create Release
-        if: "env.PUBLISH == 'true'"
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ steps.versiongen.outputs.semver_release_string }}
           release_name: Release ${{ steps.versiongen.outputs.semver_release_string }}
           draft: false
           prerelease: ${{ steps.versiongen.outputs.semver_release_is_snapshot }}
 
       - name: Upload Release Asset
-        if: "env.PUBLISH == 'true'"
         id: upload
         uses: actions/upload-release-asset@v1
         env:
@@ -113,7 +173,6 @@ jobs:
           asset_content_type: application/zip
 
       - name: Inject download location
-        if: "env.PUBLISH == 'true'"
         uses: DominicWatson/github-action-envsubst@stable
         with:
           files: box.json
@@ -121,7 +180,6 @@ jobs:
           DOWNLOAD_URL: ${{ steps.upload.outputs.browser_download_url }}
 
       - name: Publish to forgebox
-        if: "env.PUBLISH == 'true'"
         uses: pixl8/github-action-box-publish@v3
         with:
           forgebox_user: ${{ secrets.FORGEBOX_USER }}
