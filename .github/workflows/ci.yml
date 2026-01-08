@@ -68,10 +68,16 @@ jobs:
       - name: Setup CommandBox CLI
         uses: Ortus-Solutions/setup-commandbox@v2.0.1
 
-      - name: Setup NodeJs Dependengy
+      - name: Setup NodeJs Dependency
         uses: actions/setup-node@v6
         with:
           node-version: '20'
+
+      - name: Create symlink for node
+        run: |
+          NODE_PATH=$(which node)
+          sudo ln -sf "$NODE_PATH" /usr/bin/node
+          echo "/usr/bin/node -> $NODE_PATH"
 
       - name: Install dependencies
         run: cd tests && box install --force --verbose
