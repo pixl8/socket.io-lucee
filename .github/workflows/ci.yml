@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
 
       - name: Build jars
-        run: java/localbuild.sh
+        run: cd java/ && ./localbuild.sh
 
       - name: Upload Java Artifacts
         uses: actions/upload-artifact@v4
