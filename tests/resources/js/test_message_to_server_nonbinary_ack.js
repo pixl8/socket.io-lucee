@@ -15,4 +15,4 @@ socket.on('connect', function () {
 setTimeout(function () {
     console.log( "Timed out waiting for ack" );
     process.exit(1);
-}, 5000);
+}, 2000);
