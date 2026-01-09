@@ -6,7 +6,7 @@ socket.on('connect', function () {
 
     setTimeout(function () {
         process.exit(0);
-    }, 100);
+    }, 500);
 });
 
 setTimeout(function () {
