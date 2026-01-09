@@ -23,7 +23,7 @@ private void function setupListeners() {
     socket.emit( "testack", [ "arg1", "arg2" ], function( result="" ){
       SystemOutput( "Received ACK back: #arguments.result#" );
     } );
-    
+
   } );
 }
 ```
@@ -52,6 +52,8 @@ Then, in your client logic, update to the following listing that listens for the
 ```
 
 ## Client to server events
+
+**NOTE: this is known to not work in Lucee 6 and above and we have no fix for this.**
 
 Working the other way around, lets first update our HTML to fire off an event, supplying a callback function _as the last argument_:
 
@@ -88,7 +90,7 @@ private void function setupListeners() {
     socket.on( "testack", function( a, b, callback ){
       callback( "Received event from you! Thanks @ #Now()#" );
     } );
-    
+
   } );
 }
 ```
