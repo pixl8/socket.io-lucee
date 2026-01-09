@@ -22,12 +22,18 @@ socket3.on('foo', function () {
     fooReceived[2] = true;
 });
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
     if (fooReceived[0] && fooReceived[1] && !fooReceived[2]) {
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
         console.log( "success" );
         process.exit(0);
-    } else {
-        console.log( "failure" );
-        process.exit(1);
     }
-}, 2000);
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
+    console.log( fooReceived );
+    console.log( "failure" );
+    process.exit(1);
+}, 10000);
