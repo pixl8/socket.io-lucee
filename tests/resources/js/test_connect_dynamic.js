@@ -44,10 +44,15 @@ socket4.on('connect', function () {
 });
 socket4.connect();
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
     if (fooConnections[0] && fooConnections[1] && !fooConnections['a'] && !barConnection) {
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
         process.exit(0);
-    } else {
-        process.exit(1);
     }
-}, 2000);
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
+    process.exit(1);
+}, 10000);

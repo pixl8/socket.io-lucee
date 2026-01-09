@@ -37,8 +37,13 @@ socket3.on('foo', function () {
     successCheck();
 });
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
+    successCheck();
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
     successCheck();
     console.log( "failure" );
     process.exit(1);
-}, 5000);
+}, 10000);

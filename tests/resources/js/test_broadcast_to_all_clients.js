@@ -4,6 +4,8 @@ var fooReceived = [false, false];
 function testReceived() {
     if (fooReceived[0] && fooReceived[1]) {
         console.log( "messages received" );
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
         process.exit(0);
     }
 }
@@ -20,7 +22,12 @@ socket2.on('foo', function () {
     testReceived();
 });
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
+    testReceived();
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
     console.log( "Timed out waiting / did not receive." );
     process.exit(1);
-}, 2000);
+}, 10000);

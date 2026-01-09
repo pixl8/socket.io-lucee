@@ -11,6 +11,12 @@ Socket.io-lucee - Socket.IO protocol for Lucee
 
 **Important note:** The project currently supports up to version `2.3.1` of the Socket.IO client. Version `3.0.0` has very recently been released (as of November 2020) and we will need to wait for downstream project updates before we can tackle the upgrade.
 
+## A note on Lucee compatibility
+
+The tests run successfully on Lucee 4.5 -> 7. **However**, the client-side ack functionality does **not** work in Lucee 6 & 7 and there is not currently a quick fix or plan to fix this. Client-side acknowledgement functions will not work in Lucee 6 & 7.
+
+We hope to refactor this to be boxlang and all Lucee / Adobe compatible at some point in the future - making use of AI to port as much of the java logic into CFML as possible.
+
 ## Getting started
 
 We recommend you follow the [installation guide](https://pixl8.github.io/socket.io-lucee/installing/) and [getting started tutorial](https://pixl8.github.io/socket.io-lucee/tutorial/). However, below is a super-brief outline of how you use the project:
