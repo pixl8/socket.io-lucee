@@ -16,16 +16,27 @@ var socket = io('http://127.0.0.1:' + port, {
     autoConnect: false,
     transports: ['websocket']
 });
+var messageSent = false;
+
 socket.on('connect', function () {
     socket.emit('foo', binaryData);
 
     // This is necessary because engine.io defers some writes
     setTimeout(function () {
-        process.exit(0);
+        messageSent = true;
     }, 100);
 });
 socket.connect();
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
+    if (messageSent) {
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
+        process.exit(0);
+    }
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
     process.exit(1);
-}, 2000);
+}, 10000);

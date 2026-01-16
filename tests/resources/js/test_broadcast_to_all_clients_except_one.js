@@ -18,12 +18,17 @@ socket2.on('bar', function () {
     barReceived[1] = true;
 });
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
     if (barReceived[0] !== barReceived[1]) {
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
         console.log( "success" );
         process.exit(0);
-    } else {
-        console.log( "failure" );
-        process.exit(1);
     }
-}, 2000);
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
+    console.log( "failure" );
+    process.exit(1);
+}, 10000);

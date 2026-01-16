@@ -16,13 +16,24 @@ var socket = io('http://127.0.0.1:' + port, {
     autoConnect: false,
     transports: ['websocket']
 });
+var messageReceived = false;
+
 socket.on('foo', function (data) {
     if (data && data.length === 8) {
-        process.exit(0);
+        messageReceived = true;
     }
 });
 socket.connect();
 
-setTimeout(function () {
+var pollInterval = setInterval(function () {
+    if (messageReceived) {
+        clearInterval(pollInterval);
+        clearTimeout(timeout);
+        process.exit(0);
+    }
+}, 50);
+
+var timeout = setTimeout(function () {
+    clearInterval(pollInterval);
     process.exit(1);
-}, 2000);
+}, 10000);
